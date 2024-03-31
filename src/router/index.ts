@@ -1,53 +1,37 @@
 import { createRouter, createWebHistory } from "vue-router";
-import MyAnime from "@/pages/MyAnime.vue";
-import List from "@/pages/List.vue";
-import Download from "@/pages/Download.vue";
-import Setting from "@/pages/Setting.vue";
-import Anime from "@/pages/Anime.vue";
-import Detail from "@/pages/Detail.vue";
 
-const router = createRouter({
+export default createRouter({
   history: createWebHistory(),
   routes: [
     {
-      name: "myAnime",
-      path: "/",
-      component: MyAnime,
+      path: "/home",
+      component: () => import("@/pages/home/index.vue"),
     },
     {
-      name: "list",
       path: "/list",
-      component: List,
+      component: () => import("@/pages/list/index.vue"),
     },
     {
-      name: "download",
       path: "/download",
-      component: Download,
+      component: () => import("@/pages/download/index.vue"),
     },
     {
-      name: "setting",
       path: "/setting",
-      component: Setting,
+      component: () => import("@/pages/setting/index.vue"),
     },
     {
-      name: "anime",
       path: "/anime",
-      component: Anime,
-      props(route) {
-        return route.query;
-      },
-      children: [
-        {
-          name: "detail",
-          path: "detail",
-          component: Detail,
-          props(route) {
-            return route.query;
-          },
-        },
-      ],
+      component: () => import("@/pages/anime/index.vue"),
+    },
+    {
+      path: "/",
+      redirect: "/home",
     },
   ],
+  scrollBehavior() {
+    return {
+      left: 0,
+      top: 0,
+    };
+  },
 });
-
-export default router;
