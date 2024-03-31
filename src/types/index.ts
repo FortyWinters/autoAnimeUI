@@ -1,9 +1,11 @@
-export interface AnimeInter {
-  mikan_id: number;
+export interface Anime {
   anime_name: string;
-  year: number;
-  season: number;
-  subscribe_status: boolean;
+  anime_type: number;
+  id: number;
+  img_url: string;
+  mikan_id: number;
+  subscribe_status: number;
+  update_day: number;
 }
 
-export type Animes = AnimeInter[];
+export type Animes = Anime[];

@@ -1,27 +1,25 @@
 <template>
     <div class="anime-card-container">
-        <AnimeCard :animeList="animeList" />
+        <AnimeCard :animeArr="animeArr" />
     </div>
 
 </template>
 
 <script setup lang="ts">
-import { reactive, onMounted } from 'vue'
-import request from '@/utils/request'
+import { ref, onMounted } from 'vue'
+import { reqHomeAnime } from '@/api/home'
+import type { Animes } from '@/types'
 
-let animeList = reactive([
-    { mikan_id: 3060, anime_name: "无职转生第二季", img_url: "3060.jpg", subscribe_status: 1 },
-    { mikan_id: 3061, anime_name: "无职转生第三季", img_url: "3061.jpg", subscribe_status: 0 },
-    { mikan_id: 3062, anime_name: "无职转生第四季", img_url: "3062.jpg", subscribe_status: 0 },
-])
+let animeArr = ref<Animes>([])
 
-// onMounted(() => {
-//     console.log("onmounted")
-//     // request.get('/anime/detail/3221').then(res => {
-//     //     console.log(res)
-//     // })
-// })
+onMounted(() => {
+    getHomeAnime()
+})
 
+const getHomeAnime = async () => {
+    let result = await reqHomeAnime()
+    animeArr.value = result.data
+}
 
 </script>
 

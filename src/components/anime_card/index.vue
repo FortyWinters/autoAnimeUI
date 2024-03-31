@@ -1,6 +1,6 @@
 <template>
     <div class="anime-card-container">
-        <el-card v-for="a in animeList" :key="a.mikan_id" class="anime-card" shadow="hover">
+        <el-card v-for="a in animeArr" :key="a.mikan_id" class="anime-card" shadow="hover">
             <div class="card-top">
                 <img :src="a.img_url" alt="" @click="jumpToAnime(a.mikan_id)">
             </div>
@@ -24,7 +24,7 @@ import { Star } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router';
 
 const $router = useRouter()
-defineProps(['animeList'])
+defineProps(['animeArr'])
 
 function updateAnimeSubscribeStatus(mikan_id: number, subscribe_status: number) {
     console.log("updateAnimeSubscribeStatus", mikan_id, subscribe_status)

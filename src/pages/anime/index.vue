@@ -11,7 +11,7 @@ import { reactive } from 'vue'
 const $route = useRoute()
 let mikan_id = $route.query.mikan_id
 
-let animeList = reactive([
+let animeArr = reactive([
     { mikan_id: 3060, anime_name: "无职转生第二季", img_url: "3060.jpg", subscribe_status: 1 },
 ])
 </script>
