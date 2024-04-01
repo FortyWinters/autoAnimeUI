@@ -1,8 +1,8 @@
 <template>
     <div class="anime-card-container">
         <el-card v-for="a in animeArr" :key="a.mikan_id" class="anime-card" shadow="hover">
-            <div class="card-top">
-                <img :src="a.img_url" alt="" @click="jumpToAnime(a.mikan_id)">
+            <div class="card-top" @click="jumpToAnime(a.mikan_id)">
+                <img :src="a.img_url" alt="">
             </div>
             <div class="card-bottom">
                 <div class="card-left">
