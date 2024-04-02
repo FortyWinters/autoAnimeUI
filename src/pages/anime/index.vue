@@ -6,7 +6,7 @@
         <div class="anime-right">
             <div class="anime-name">{{ animeInfo.anime_name }}</div>
             <div class="anime-button">
-                <el-button :icon="Star" circle type="warning"
+                <el-button :icon="Star" circle type="warning" @click="subscribeAnime"
                     :class="{ 'is-subscribed': animeInfo.subscribe_status == 1, 'is-not-subscribed': animeInfo.subscribe_status != 1 }" />
                 <el-button type="primary" :icon="RefreshRight" circle />
                 <el-button type="success" :icon="Download" circle />
@@ -23,6 +23,7 @@
 import { useRoute } from 'vue-router'
 import { reactive, onMounted } from 'vue'
 import { useAnimeStore } from '@/store/modules/anime'
+import { ElMessage } from "element-plus";
 import Tab from './tab/index.vue'
 import {
     Star,
@@ -38,10 +39,6 @@ const { animeInfo, img_url } = storeToRefs(animeStore)
 let $route = useRoute()
 let mikanId = $route.query.mikan_id
 
-let anime = reactive(
-    { mikan_id: 3060, anime_name: "无职转生第二季", img_url: "3060.jpg", subscribe_status: 1 },
-)
-
 let subgroupArr = reactive([
     { subgroup_id: 1, subgroup_name: "字幕组1" },
     { subgroup_id: 2, subgroup_name: "字幕组2" },
@@ -52,6 +49,17 @@ let subgroupArr = reactive([
 onMounted(() => {
     animeStore.getAnime(Number($route.query.mikan_id))
 })
+
+async function subscribeAnime() {
+    try {
+        await animeStore.updateSubscribeStatus();
+    } catch (error) {
+        ElMessage({
+            message: (error as Error).message,
+            type: 'error'
+        })
+    }
+}
 </script>
 
 <style scoped lang="scss">

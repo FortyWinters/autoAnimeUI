@@ -9,3 +9,8 @@ export interface Anime {
 }
 
 export type Animes = Anime[];
+
+export interface ReqSubscribeAnime {
+  mikan_id: number;
+  subscribe_status: number;
+}

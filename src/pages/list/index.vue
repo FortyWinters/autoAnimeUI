@@ -1,29 +1,19 @@
 <template>
-
-    <AnimeCard :animeArr="animeArr" />
-
+    <AnimeCard :animeArr="animeArr" :updateAnimeArr="updateAnimeArr" />
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { ref } from 'vue'
+import type { Animes } from '@/types'
 
-let animeArr = reactive([
-    { mikan_id: 3060, anime_name: "无职转生第二季", img_url: "3060.jpg", subscribe_status: 1 },
-    { mikan_id: 3061, anime_name: "无职转生第三季", img_url: "3061.jpg", subscribe_status: 0 },
-    { mikan_id: 3062, anime_name: "无职转生第四季", img_url: "3062.jpg", subscribe_status: 0 },
-    { mikan_id: 3060, anime_name: "无职转生第二季", img_url: "3060.jpg", subscribe_status: 1 },
-    { mikan_id: 3061, anime_name: "无职转生第三季", img_url: "3061.jpg", subscribe_status: 0 },
-    { mikan_id: 3062, anime_name: "无职转生第四季", img_url: "3062.jpg", subscribe_status: 0 },
-    { mikan_id: 3060, anime_name: "无职转生第二季", img_url: "3060.jpg", subscribe_status: 1 },
-    { mikan_id: 3061, anime_name: "无职转生第三季", img_url: "3061.jpg", subscribe_status: 0 },
-    { mikan_id: 3062, anime_name: "无职转生第四季", img_url: "3062.jpg", subscribe_status: 0 },
-    { mikan_id: 3060, anime_name: "无职转生第二季", img_url: "3060.jpg", subscribe_status: 1 },
-    { mikan_id: 3061, anime_name: "无职转生第三季", img_url: "3061.jpg", subscribe_status: 0 },
-    { mikan_id: 3062, anime_name: "无职转生第四季", img_url: "3062.jpg", subscribe_status: 0 },
-    { mikan_id: 3060, anime_name: "无职转生第二季", img_url: "3060.jpg", subscribe_status: 1 },
-    { mikan_id: 3061, anime_name: "无职转生第三季", img_url: "3061.jpg", subscribe_status: 0 },
-    { mikan_id: 3062, anime_name: "无职转生第四季", img_url: "3062.jpg", subscribe_status: 0 },
-])
+let animeArr = ref<Animes>([])
+
+const updateAnimeArr = (mikan_id: number, newStatus: number) => {
+    const index = animeArr.value.findIndex((anime) => anime.mikan_id === mikan_id);
+    if (index !== -1) {
+        animeArr.value[index].subscribe_status = newStatus;
+    }
+};
 </script>
 
 <style scoped lang="scss"></style>

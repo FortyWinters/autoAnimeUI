@@ -23,12 +23,39 @@
 <script setup lang="ts">
 import { Star } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router';
+import { reqSubscribeAnime } from '@/api/anime';
+import type { ReqSubscribeAnime } from '@/types';
+import { ElMessage } from 'element-plus';
 
 const $router = useRouter()
-defineProps(['animeArr'])
+let props = defineProps(['animeArr', 'updateAnimeArr'])
 
-function updateAnimeSubscribeStatus(mikan_id: number, subscribe_status: number) {
-    console.log("updateAnimeSubscribeStatus", mikan_id, subscribe_status)
+async function updateAnimeSubscribeStatus(mikan_id: number, subscribe_status: number) {
+    let item: ReqSubscribeAnime = {
+        mikan_id: mikan_id,
+        subscribe_status: subscribe_status
+    }
+    try {
+        await reqSubscribeAnime(item);
+        if (subscribe_status == 0) {
+            ElMessage({
+                message: '订阅成功',
+                type: 'success'
+            })
+            props.updateAnimeArr(mikan_id, 1)
+        } else {
+            ElMessage({
+                message: '取消订阅成功',
+                type: 'success'
+            })
+            props.updateAnimeArr(mikan_id, 0)
+        }
+    } catch (error) {
+        ElMessage({
+            message: (error as Error).message,
+            type: 'error'
+        })
+    }
 }
 
 function jumpToAnime(mikan_id: number) {
