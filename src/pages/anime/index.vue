@@ -1,18 +1,19 @@
 <template>
     <div class="anime-container">
         <div class="anime-left">
-            <img :src="anime.img_url" alt="">
+            <img :src="img_url" alt="">
         </div>
         <div class="anime-right">
-            <div class="anime-name">{{ anime.anime_name }}</div>
+            <div class="anime-name">{{ animeInfo.anime_name }}</div>
             <div class="anime-button">
-                <el-button :icon="Star" color="red" circle />
+                <el-button :icon="Star" circle type="warning"
+                    :class="{ 'is-subscribed': animeInfo.subscribe_status == 1, 'is-not-subscribed': animeInfo.subscribe_status != 1 }" />
                 <el-button type="primary" :icon="RefreshRight" circle />
                 <el-button type="success" :icon="Download" circle />
                 <el-button type="danger" :icon="Delete" circle />
             </div>
             <div class="subgroup-tab">
-                <Tab :subgroupArr="subgroupArr" :mikanId="mikanId"/>
+                <Tab :subgroupArr="subgroupArr" :mikanId="mikanId" />
             </div>
         </div>
     </div>
@@ -20,7 +21,8 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { reactive } from 'vue'
+import { reactive, onMounted } from 'vue'
+import { useAnimeStore } from '@/store/modules/anime'
 import Tab from './tab/index.vue'
 import {
     Star,
@@ -28,8 +30,12 @@ import {
     Download,
     Delete
 } from '@element-plus/icons-vue'
+import { storeToRefs } from 'pinia'
 
-const $route = useRoute()
+let animeStore = useAnimeStore()
+const { animeInfo, img_url } = storeToRefs(animeStore)
+
+let $route = useRoute()
 let mikanId = $route.query.mikan_id
 
 let anime = reactive(
@@ -37,11 +43,15 @@ let anime = reactive(
 )
 
 let subgroupArr = reactive([
-    {subgroup_id: 1, subgroup_name: "字幕组1"},
-    {subgroup_id: 2, subgroup_name: "字幕组2"},
-    {subgroup_id: 3, subgroup_name: "字幕组3"},
-    {subgroup_id: 4, subgroup_name: "字幕组4"}
+    { subgroup_id: 1, subgroup_name: "字幕组1" },
+    { subgroup_id: 2, subgroup_name: "字幕组2" },
+    { subgroup_id: 3, subgroup_name: "字幕组3" },
+    { subgroup_id: 4, subgroup_name: "字幕组4" }
 ])
+
+onMounted(() => {
+    animeStore.getAnime(Number($route.query.mikan_id))
+})
 </script>
 
 <style scoped lang="scss">
@@ -66,13 +76,36 @@ let subgroupArr = reactive([
     .anime-right {
         width: 70%;
         height: 100%;
+
         .anime-name {
-            font-size:24px;
+            font-size: 24px;
             margin-bottom: 10px;
         }
+
         .anime-button {
             margin-bottom: 40px;
+
+            .is-subscribed {
+                background-color: red;
+                border-color: red;
+            }
+
+            .is-subscribed:hover {
+                background-color: rgb(234, 22, 22);
+                border-color: rgb(234, 22, 22);
+                ;
+            }
+
+            .is-not-subscribed {
+                background-color: #d6d6d6;
+                border-color: #d6d6d6;
+            }
+
+            .is-not-subscribed:hover {
+                background-color: red;
+                border-color: red;
+            }
         }
     }
 }
-</style>
+</style>@/store/modules/anime

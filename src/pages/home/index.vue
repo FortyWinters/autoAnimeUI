@@ -7,17 +7,17 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { reqHomeAnime } from '@/api/home'
+import { reqAnimeHome } from '@/api/home'
 import type { Animes } from '@/types'
 
 let animeArr = ref<Animes>([])
 
 onMounted(() => {
-    getHomeAnime()
+    getAnimeHome()
 })
 
-const getHomeAnime = async () => {
-    let result = await reqHomeAnime()
+const getAnimeHome = async () => {
+    let result = await reqAnimeHome()
     animeArr.value = result.data
 }
 

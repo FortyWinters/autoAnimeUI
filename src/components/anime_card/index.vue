@@ -2,7 +2,7 @@
     <div class="anime-card-container">
         <el-card v-for="a in animeArr" :key="a.mikan_id" class="anime-card" shadow="hover">
             <div class="card-top" @click="jumpToAnime(a.mikan_id)">
-                <img :src="a.img_url" alt="">
+                <img :src="`path/${a.img_url}`" alt="">
             </div>
             <div class="card-bottom">
                 <div class="card-left">
@@ -11,8 +11,9 @@
                     </el-text>
                 </div>
                 <div class="card-right">
-                    <el-button type="warning" :icon="Star" circle size="small" color="red"
-                        @click="updateAnimeSubscribeStatus(a.mikan_id, a.subscribe_status)" />
+                    <el-button type="warning" :icon="Star" circle size="small"
+                        @click="updateAnimeSubscribeStatus(a.mikan_id, a.subscribe_status)"
+                        :class="{ 'is-subscribed': a.subscribe_status == 1, 'is-not-subscribed': a.subscribe_status != 1 }" />
                 </div>
             </div>
         </el-card>
@@ -82,6 +83,26 @@ function jumpToAnime(mikan_id: number) {
                     justify-content: center;
                     align-items: center;
 
+                    .is-subscribed {
+                        background-color: red;
+                        border-color: red;
+                    }
+
+                    .is-subscribed:hover {
+                        background-color: rgb(234, 22, 22);
+                        border-color: rgb(234, 22, 22);
+                        ;
+                    }
+
+                    .is-not-subscribed {
+                        background-color: #d6d6d6;
+                        border-color: #d6d6d6;
+                    }
+
+                    .is-not-subscribed:hover {
+                        background-color: red;
+                        border-color: red;
+                    }
                 }
             }
         }
