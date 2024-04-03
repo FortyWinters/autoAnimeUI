@@ -1,38 +1,32 @@
 <template>
-    <AnimeCard :animeArr="animeArr" :updateAnimeArr="updateAnimeArr" />
+    <AnimeCard />
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
-import type { Animes } from '@/types'
-import { reqAnimeBroadcast } from '@/api/list'
+import type { ReqAnimeBroadcast } from '@/types'
 import { useRoute } from 'vue-router';
+import { useListStore } from '@/store/modules/list'
 
-let animeArr = ref<Animes>([])
+let listStore = useListStore()
 
 let $route = useRoute()
-let year = $route.query.year
-let season = $route.query.season
 
 onMounted(() => {
-    getAnimeHome(Number(year), Number(season))
+    let item: ReqAnimeBroadcast = {
+        year: Number($route.query.year),
+        season: Number($route.query.season),
+    }
+    listStore.getBroadcastList(item)
 })
 
 watch(() => $route.query, (newQuery) => {
-    getAnimeHome(Number(newQuery.year), Number(newQuery.season))
-});
-
-const getAnimeHome = async (year: number, season: number) => {
-    let result = await reqAnimeBroadcast(year, season)
-    animeArr.value = result.data
-}
-
-const updateAnimeArr = (mikan_id: number, newStatus: number) => {
-    const index = animeArr.value.findIndex((anime) => anime.mikan_id === mikan_id);
-    if (index !== -1) {
-        animeArr.value[index].subscribe_status = newStatus;
+    let newItem: ReqAnimeBroadcast = {
+        year: Number(newQuery.year),
+        season: Number(newQuery.season),
     }
-};
+    listStore.getBroadcastList(newItem)
+});
 </script>
 
 <style scoped lang="scss"></style>

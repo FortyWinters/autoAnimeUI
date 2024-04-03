@@ -1,6 +1,6 @@
 <template>
     <div class="anime-card-container">
-        <el-card v-for="a in animeArr" :key="a.mikan_id" class="anime-card" shadow="hover">
+        <el-card v-for="a in animeList" :key="a.mikan_id" class="anime-card" shadow="hover">
             <div class="card-top" @click="jumpToAnime(a.mikan_id)">
                 <img :src="`path/${a.img_url}`" alt="">
             </div>
@@ -22,13 +22,18 @@
 
 <script setup lang="ts">
 import { Star } from '@element-plus/icons-vue'
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { reqSubscribeAnime } from '@/api/anime';
-import type { ReqSubscribeAnime } from '@/types';
+import type { ReqAnimeBroadcast, ReqSubscribeAnime } from '@/types';
 import { ElMessage } from 'element-plus';
+import { useListStore } from '@/store/modules/list'
+import { storeToRefs } from 'pinia'
+
+let listStore = useListStore()
+const { animeList } = storeToRefs(listStore)
 
 const $router = useRouter()
-let props = defineProps(['animeArr', 'updateAnimeArr'])
+const $route = useRoute()
 
 async function updateAnimeSubscribeStatus(mikan_id: number, subscribe_status: number) {
     let item: ReqSubscribeAnime = {
@@ -42,13 +47,20 @@ async function updateAnimeSubscribeStatus(mikan_id: number, subscribe_status: nu
                 message: '订阅成功',
                 type: 'success'
             })
-            props.updateAnimeArr(mikan_id, 1)
         } else {
             ElMessage({
                 message: '取消订阅成功',
                 type: 'success'
             })
-            props.updateAnimeArr(mikan_id, 0)
+        }
+        if ($route.path == '/home') {
+            listStore.getHomeList()
+        } else {
+            let broadcastItem: ReqAnimeBroadcast = {
+                year: Number($route.query.year),
+                season: Number($route.query.season),
+            }
+            listStore.getBroadcastList(broadcastItem)
         }
     } catch (error) {
         ElMessage({

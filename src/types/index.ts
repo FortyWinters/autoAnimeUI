@@ -14,3 +14,8 @@ export interface ReqSubscribeAnime {
   mikan_id: number;
   subscribe_status: number;
 }
+
+export interface ReqAnimeBroadcast {
+  year: number;
+  season: number;
+}

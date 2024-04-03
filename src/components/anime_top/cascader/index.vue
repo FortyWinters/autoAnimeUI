@@ -4,15 +4,19 @@
             <el-cascader v-model="value" :options="calendarList" :props="props" @change="handleChange"
                 placeholder="番剧列表" />
         </div>
-        <el-button :icon="RefreshRight" circle @click="updateAnimeList" />
+        <el-button :icon="RefreshRight" circle @click="updateAnimeList" :disabled="isDisabled" />
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router';
 import { useCalendar } from '@/hooks/useCalendar';
 import { RefreshRight } from '@element-plus/icons-vue'
+import type { ReqAnimeBroadcast } from '@/types'
+import { useListStore } from '@/store/modules/list'
+
+let listStore = useListStore()
 
 const value = ref([])
 const $router = useRouter()
@@ -23,9 +27,13 @@ const props = {
     expandTrigger: 'hover' as const,
 }
 
+const isDisabled = computed(() => {
+    return $route.path !== '/list';
+});
+
 const handleChange = (value: string[]) => {
     $router.push({
-        path: '/List',
+        path: '/list',
         query: {
             year: value[0],
             season: value[1]
@@ -33,13 +41,13 @@ const handleChange = (value: string[]) => {
     })
 }
 
-function updateAnimeList() {
-    let year = $route.query.year
-    let season = $route.query.season
-
-    console.log(year, season)
+async function updateAnimeList() {
+    let item: ReqAnimeBroadcast = {
+        year: Number($route.query.year),
+        season: Number($route.query.season),
+    }
+    listStore.updateBroadcastList(item)
 }
-// TODO 当离开/List路径时，番剧列表内容清空
 </script>
 
 <style scoped lang="scss">

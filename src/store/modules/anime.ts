@@ -18,7 +18,7 @@ export const useAnimeStore = defineStore("anime", {
     },
     async updateSubscribeStatus() {
       let result = await reqSubscribeAnime(this.reqSubscribeAnimeData);
-      if (result.status == 201) {
+      if (result.status == 200) {
         if (this.animeInfo.subscribe_status == 0) {
           ElMessage({
             message: "订阅成功",
