@@ -2,17 +2,17 @@
     <el-row :gutter="0">
         <el-col :span="3">
             <div class="grid-content ep-bg-purple">
-                <img :src="gifPath3" alt="GIF Image" class="leftImage">
+                <img src="@/assets/images/1.gif" alt="GIF Image" class="leftImage">
             </div>
         </el-col>
         <el-col :span="16">
             <el-row :gutter="1">
                 <div class="topbar">
-                    <router-link :to="'../home'" class="link">Home</router-link>
+                    <router-link :to="'@/pages/home'" class="link">Home</router-link>
                     <span> >> </span>
-                    <router-link :to="'../anime?mikan_id=3240'" class="link">Anime</router-link>
+                    <router-link :to="`@/pages/anime?/${mikanId}`" class="link">Anime</router-link>
                     <span> >> </span>
-                    <router-link :to="'../video'" class="link">Video</router-link>
+                    <router-link :to="`@/pages/video?/${mikanId, episode, subgroup_id}`" class="link">Video</router-link>
                 </div>
             </el-row>
             <el-row :gutter="1">
@@ -30,19 +30,19 @@
                     </div>
                 </div>
             </el-row>
-            <el-row :gutter="1">
-                <div class="grid-content ep-bg-purple">
-                    <!-- <img :src="gifPath4" alt="GIF Image" style="width: 100px; height: 100px;"> -->
-                    <span class="text">BanG(umi) Dream! It's My AutoAnime ! ! ! ! !</span>
-                    <span style="font-size: 25px;"> ✌️🥵✌️</span>
-                </div>
-            </el-row>
         </el-col>
         <el-col :span="3">
             <div class="grid-content ep-bg-purple">
-                <img :src=gifPath3 alt="GIF Image" class="rightImage">
+                <img src="@/assets/images/1.gif" alt="GIF Image" class="rightImage">
             </div>
         </el-col>
+    </el-row>
+    <el-row :gutter="1">
+        <div class="grid-content ep-bg-purple" style="margin-top: 30px;">
+            <!-- <img :src="gifPath4" alt="GIF Image" style="width: 100px; height: 100px;"> -->
+            <span class="text">BanG(umi) Dream! It's My AutoAnime ! ! ! ! !</span>
+            <span style="font-size: 25px;"> ✌️🥵✌️</span>
+        </div>
     </el-row>
 </template>
 
@@ -50,12 +50,13 @@
 import { useRoute } from 'vue-router'
 import { reactive, ref } from 'vue'
 import Tab from '../anime/tab/index.vue'
-const $route = useRoute()
 
+const $route = useRoute()
 let mikanId = $route.query.mikan_id
+let episode = $route.query.episode
+let subgroup_id = $route.query.subgroup_id
+
 let videoPath = ref("http://127.0.0.1:9999/迷宫饭/迷宫饭 - 13 - 喵萌奶茶屋.mp4")
-let gifPath3 = ref("http://127.0.0.1:9999/3.gif")
-let gifPath4 = ref("http://127.0.0.1:9999/4.gif")
 
 let subgroupArr = reactive([
     { subgroup_id: 1, subgroup_name: "字幕组1" },
@@ -118,7 +119,7 @@ let subgroupArr = reactive([
 }
 
 .text {
-    margin-left: 300px;
+    margin-left: 600px;
     font-family: Serif;
     font-weight: 100;
     font-size: 20px;

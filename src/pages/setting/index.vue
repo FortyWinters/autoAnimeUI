@@ -3,47 +3,53 @@
 
     <el-row :gutter="10">
         <el-col :span="3">
-            <div class="grid-content ep-bg-purple" />
-            <div class="container" style="height: 40px">
-            <!-- <div class="container" style="height: 40px; background-color:brown;"> -->
-                <span class="text">自动模式： </span>
+            <div class="grid-content ep-bg-purple">
+                <div class="container" style="height: 40px">
+                    <!-- <div class="container" style="height: 40px; background-color:brown;"> -->
+                    <span class="text">自动模式： </span>
+                </div>
             </div>
         </el-col>
         <el-col :span="6">
-            <div class="grid-content ep-bg-purple" />
-            <div class="container" style="height: 40px;  display: flex; justify-content: center;">
-                <span class="text"> {{ Status }} </span>
+            <div class="grid-content ep-bg-purple">
+                <div class="container" style="height: 40px;  display: flex; justify-content: center;">
+                    <span class="text"> {{ Status }} </span>
+                </div>
             </div>
         </el-col>
     </el-row>
 
     <el-row :gutter="10">
         <el-col :span="3" :offset="3">
-            <div class="grid-content ep-bg-purple" />
-            <div class="container" style="height: 40px; display: flex; justify-content: center;">
-                <el-button type="primary" plain @click="doAutoModeOn()">🦍神，启动！</el-button>
+            <div class="grid-content ep-bg-purple">
+                <div class="container" style="height: 40px; display: flex; justify-content: center;">
+                    <el-button type="primary" plain @click="doAutoModeOn()">🦍神，启动！</el-button>
+                </div>
             </div>
         </el-col>
         <el-col :span="3">
-            <div class="grid-content ep-bg-purple" />
-            <div class="container" style="height: 40px;  display: flex; justify-content: center;">
-                <el-button type="primary" plain @click="doAutoModeOff()">🦍神，关闭！</el-button>
+            <div class="grid-content ep-bg-purple">
+                <div class="container" style="height: 40px;  display: flex; justify-content: center;">
+                    <el-button type="primary" plain @click="doAutoModeOff()">🦍神，关闭！</el-button>
+                </div>
             </div>
         </el-col>
     </el-row>
 
     <el-row :gutter="10">
         <el-col :span="3">
-            <div class="grid-content ep-bg-purple" />
-            <div class="container" style="height: 40px">
-            <!-- <div class="container" style="height: 40px; background-color:brown;"> -->
-                <span class="text">同步本地文件： </span>
+            <div class="grid-content ep-bg-purple">
+                <div class="container" style="height: 40px">
+                    <!-- <div class="container" style="height: 40px; background-color:brown;"> -->
+                    <span class="text">同步本地文件： </span>
+                </div>
             </div>
         </el-col>
         <el-col :span="3">
-            <div class="grid-content ep-bg-purple" />
-            <div class="container" style="height: 40px;  display: flex; justify-content: center;">
-                <el-button type="primary" plain @click="doReloadTask()" class="button">🦍神，同步！</el-button>
+            <div class="grid-content ep-bg-purple">
+                <div class="container" style="height: 40px;  display: flex; justify-content: center;">
+                    <el-button type="primary" plain @click="doReloadTask()" class="button">🦍神，同步！</el-button>
+                </div>
             </div>
         </el-col>
     </el-row>
@@ -82,7 +88,7 @@ const doAutoModeOff = async () => {
 onMounted(async () => {
     try {
         const response: AxiosResponse<string> = await autoModeStatus();
-            Status.value = response.data;
+        Status.value = response.data;
     } catch (error) {
         console.error('Error fetching Status:', error);
     }
