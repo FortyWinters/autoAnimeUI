@@ -7,6 +7,9 @@
                     <el-dropdown-item command="download">下载</el-dropdown-item>
                     <el-dropdown-item command="recover">恢复</el-dropdown-item>
                     <el-dropdown-item command="subscribe">开始订阅</el-dropdown-item>
+                    <el-dropdown-item command="play">
+                        <router-link :to="'../../video'" class="link">网页播放</router-link>
+                    </el-dropdown-item>
                     <el-dropdown-item command="delete" divided disabled>删除</el-dropdown-item>
                 </el-dropdown-menu>
             </template>
@@ -24,4 +27,11 @@ defineProps(['seedArr'])
 </script>
 
 <style scoped lang="scss">
+.link {
+    text-decoration: none;
+}
+
+.link:visited {
+    color: inherit;
+}
 </style>

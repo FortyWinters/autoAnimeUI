@@ -24,6 +24,10 @@ export default createRouter({
       component: () => import("@/pages/anime/index.vue"),
     },
     {
+      path: "/video",
+      component: () => import("@/pages/video/index.vue"),
+    },
+    {
       path: "/",
       redirect: "/home",
     },
