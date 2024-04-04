@@ -37,22 +37,22 @@ export const useListStore = defineStore("list", {
       try {
         let result = await reqUpdateAnimeBroadcast(item);
         if (result.status == 200) {
+          loading.close();
+          await this.getBroadcastList(item);
           ElMessage({
             message: "番剧列表更新成功",
             type: "success",
           });
-          await this.getBroadcastList(item);
           return "ok";
         } else {
+          loading.close();
           throw new Error(result.data || "未知错误");
         }
       } catch (error) {
-        ElMessage.error({
-          message:
-            error instanceof Error ? error.message : "番剧列表更新更新失败",
-        });
-      } finally {
         loading.close();
+        ElMessage.error({
+          message: error instanceof Error ? error.message : "番剧列表更新失败",
+        });
       }
       return "ok";
     },

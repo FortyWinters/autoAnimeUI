@@ -22,7 +22,6 @@ export function useCalendar() {
     ];
 
     let currentSeasonIndex: number;
-
     if (currentMonth >= 1 && currentMonth <= 3) {
       currentSeasonIndex = 0; // 冬季
     } else if (currentMonth >= 4 && currentMonth <= 6) {
@@ -35,23 +34,27 @@ export function useCalendar() {
 
     const calendarList: SeasonStructure[] = [];
 
-    for (let year = startYear; year <= currentYear; year++) {
+    for (let year = currentYear; year >= startYear; year--) {
       const yearStructure: SeasonStructure = {
         value: year.toString(),
-        label: year.toString(),
+        label: year.toString() + "年",
         children: [],
       };
 
-      for (let i = 0; i < seasons.length; i++) {
-        if (year === currentYear && i > currentSeasonIndex) {
-          break;
-        }
+      const seasonsToAdd =
+        year === currentYear
+          ? seasons.slice(0, currentSeasonIndex + 1)
+          : seasons;
+      const labelsToAdd =
+        year === currentYear
+          ? seasonLabels.slice(0, currentSeasonIndex + 1)
+          : seasonLabels;
 
+      for (let i = 0; i < seasonsToAdd.length; i++) {
         const seasonStructure: SeasonStructure = {
-          value: seasons[i],
-          label: seasonLabels[i],
+          value: seasonsToAdd[i],
+          label: labelsToAdd[i],
         };
-
         yearStructure.children?.push(seasonStructure);
       }
 
@@ -62,7 +65,7 @@ export function useCalendar() {
   }
 
   const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth() + 1; // TypeScript 中，月份是从 0 开始计数的
+  const currentMonth = new Date().getMonth() + 1; // 月份从0开始计数
 
   const calendarList = generateSeasonsStructure(
     2014,

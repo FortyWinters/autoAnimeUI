@@ -1,31 +1,32 @@
 <template>
     <div class="seed-container">
-        <el-dropdown v-for="s in seedArr" :key="s.seed_name" @command="handleCommand">
-            <span style="font-size: 15px; margin: 10px 10px;">第{{ s.index }}集</span>
-            <template #dropdown>
-                <el-dropdown-menu>
-                    <el-dropdown-item command="download">下载</el-dropdown-item>
-                    <el-dropdown-item command="recover">恢复</el-dropdown-item>
-                    <el-dropdown-item command="subscribe">开始订阅</el-dropdown-item>
-                    <el-dropdown-item command="play" @click="jumpToVideo(mikanId, s.index, s.subgroup_id)"> 网页播放
-                    </el-dropdown-item>
-                    <el-dropdown-item command="delete" divided disabled>删除</el-dropdown-item>
-                </el-dropdown-menu>
-            </template>
-        </el-dropdown>
+            <el-dropdown v-for="s in seedArr" :key="s.seed_url">
+                <div class="episode-container">
+                    <div class="episode">
+                        <span style="font-size: 15px; margin: 10px 10px; color: black;" :title="s.seed_name">
+                            {{ s.episode === -1 ? '合 集' : `第 ${s.episode} 集` }}
+                        </span>
+                    </div>
+                </div>
+                <template #dropdown>
+                    <el-dropdown-menu>
+                        <el-dropdown-item command="download">下载</el-dropdown-item>
+                        <el-dropdown-item command="recover">恢复</el-dropdown-item>
+                        <el-dropdown-item command="subscribe">开始订阅</el-dropdown-item>
+                        <el-dropdown-item command="play" @click="jumpToVideo(s.mikan_id, s.episode, s.subgroup_id)"> 网页播放
+                        </el-dropdown-item>
+                        <el-dropdown-item command="delete" divided disabled>删除</el-dropdown-item>
+                    </el-dropdown-menu>
+                </template>
+            </el-dropdown>
     </div>
 </template>
 
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 
+defineProps(['seedArr'])
 const $router = useRouter()
-const handleCommand = (command: string | number | object) => {
-    console.log(command)
-}
-
-let $route = useRoute()
-let mikanId = Number($route.query.mikan_id)
 
 function jumpToVideo(mikan_id: number, episode: number, subgroup_id: number) {
     $router.push({
@@ -37,8 +38,6 @@ function jumpToVideo(mikan_id: number, episode: number, subgroup_id: number) {
         }
     })
 }
-
-defineProps(['seedArr'])
 </script>
 
 <style scoped lang="scss">
@@ -48,5 +47,23 @@ defineProps(['seedArr'])
 
 .link:visited {
     color: inherit;
+}
+
+.episode-container {
+    height: 30px;
+    width: 90px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .episode {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 25px;
+        width: 80px;
+        border-radius: 3px;
+        border: 1px solid rgb(220, 217, 217);
+    }
 }
 </style>

@@ -8,12 +8,12 @@
             <div class="anime-button">
                 <el-button :icon="Star" circle type="warning" @click="subscribeAnime"
                     :class="{ 'is-subscribed': animeInfo.subscribe_status == 1, 'is-not-subscribed': animeInfo.subscribe_status != 1 }" />
-                <el-button type="primary" :icon="RefreshRight" circle />
+                <el-button type="primary" :icon="RefreshRight" circle @click="updateAnimeSeed" />
                 <el-button type="success" :icon="Download" circle />
                 <el-button type="danger" :icon="Delete" circle />
             </div>
             <div class="subgroup-tab">
-                <Tab :subgroupArr="subgroupArr" :mikanId="mikanId" />
+                <Tab />
             </div>
         </div>
     </div>
@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { reactive, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import { useAnimeStore } from '@/store/modules/anime'
 import { ElMessage } from "element-plus";
 import Tab from './tab/index.vue'
@@ -37,17 +37,12 @@ let animeStore = useAnimeStore()
 const { animeInfo, img_url } = storeToRefs(animeStore)
 
 let $route = useRoute()
-let mikanId = $route.query.mikan_id
-
-let subgroupArr = reactive([
-    { subgroup_id: 1, subgroup_name: "字幕组1" },
-    { subgroup_id: 2, subgroup_name: "字幕组2" },
-    { subgroup_id: 3, subgroup_name: "字幕组3" },
-    { subgroup_id: 4, subgroup_name: "字幕组4" }
-])
 
 onMounted(() => {
     animeStore.getAnime(Number($route.query.mikan_id))
+    animeStore.getSeed(Number($route.query.mikan_id))
+    animeStore.getSubgroup()
+    animeStore.getTask(Number($route.query.mikan_id))
 })
 
 async function subscribeAnime() {
@@ -59,6 +54,10 @@ async function subscribeAnime() {
             type: 'error'
         })
     }
+}
+
+async function updateAnimeSeed() {
+    animeStore.updateSeed()
 }
 </script>
 
@@ -99,9 +98,8 @@ async function subscribeAnime() {
             }
 
             .is-subscribed:hover {
-                background-color: rgb(234, 22, 22);
-                border-color: rgb(234, 22, 22);
-                ;
+                background-color: rgb(249, 104, 104);
+                border-color: rgb(249, 104, 104);
             }
 
             .is-not-subscribed {
