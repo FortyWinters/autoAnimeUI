@@ -10,7 +10,7 @@
                     :class="{ 'is-subscribed': animeInfo.subscribe_status == 1, 'is-not-subscribed': animeInfo.subscribe_status != 1 }" />
                 <el-button type="primary" :icon="RefreshRight" circle @click="updateAnimeSeed" />
                 <el-button type="success" :icon="Download" circle />
-                <el-button type="danger" :icon="Delete" circle />
+                <el-button type="danger" :icon="Delete" circle @click="deleteAnimeSeed" />
             </div>
             <div class="subgroup-tab">
                 <Tab />
@@ -46,18 +46,15 @@ onMounted(() => {
 })
 
 async function subscribeAnime() {
-    try {
-        await animeStore.updateSubscribeStatus();
-    } catch (error) {
-        ElMessage({
-            message: (error as Error).message,
-            type: 'error'
-        })
-    }
+    await animeStore.updateSubscribeStatus();
 }
 
 async function updateAnimeSeed() {
     animeStore.updateSeed()
+}
+
+async function deleteAnimeSeed() {
+    animeStore.deleteSeed()
 }
 </script>
 

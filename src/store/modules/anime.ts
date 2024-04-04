@@ -6,6 +6,7 @@ import {
   reqSubgroupInfo,
   reqTaskInfo,
   reqUpdateAnimeSeed,
+  reqDeleteAnimeSeed,
 } from "@/api/anime";
 import type { Anime, Seeds, Subgroups, Tasks } from "@/types";
 import { ElMessage, ElLoading } from "element-plus";
@@ -95,6 +96,21 @@ export const useAnimeStore = defineStore("anime", {
       } finally {
       }
       return "ok";
+    },
+    async deleteSeed() {
+      let result = await reqDeleteAnimeSeed(this.reqAnimeData);
+      if (result.status == 200) {
+        await this.getSeed(this.reqAnimeData.mikan_id);
+        await this.getSubgroup();
+        await this.getTask(this.reqAnimeData.mikan_id);
+        ElMessage({
+          message: "删除成功",
+          type: "success",
+        });
+        return "ok";
+      } else {
+        return Promise.reject(new Error(result.data));
+      }
     },
   },
   getters: {

@@ -51,6 +51,6 @@ export interface Task {
 // 1: done
 export type Tasks = Task[];
 
-export interface ReqUpdateAnimeSeed {
+export interface ReqAnime {
   mikan_id: number;
 }
