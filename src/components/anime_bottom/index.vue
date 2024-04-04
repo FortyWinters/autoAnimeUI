@@ -1,7 +1,11 @@
 <template>
     <div class="bottom">
         <div class="content">
-            <div class="github">GitHub</div>
+            <div class="github">
+                <a href="https://github.com/FortyWinters/autoAnimeR">
+                    <img src="../../assets/images/github.png" alt="">
+                </a>
+            </div>
         </div>
     </div>
 </template>
@@ -26,6 +30,10 @@
 
         .github {
             margin-right: 10px;
+
+            img {
+                height: 35px;
+            }
         }
     }
 }
