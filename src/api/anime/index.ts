@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import type { ReqSubscribeAnime, ReqAnime } from "@/types";
+import type { ReqSubscribeAnime, ReqAnime, Seed } from "@/types";
 
 enum API {
   GET_ANIME_INFO_URL = "/anime/info",
@@ -9,6 +9,7 @@ enum API {
   GET_TASK_INFO_URL = "/anime/task",
   UPDATE_ANIME_SEED_URL = "/anime/seed/update",
   DELETE_ANIME_SEED_URL = "/anime/seed/delete",
+  DOWNLOAD_ANIME_SEED_URL = "/anime/seed/download",
 }
 
 export const reqAnimeInfo = (mikan_id: number) =>
@@ -24,3 +25,5 @@ export const reqUpdateAnimeSeed = (data: ReqAnime) =>
   request.post(API.UPDATE_ANIME_SEED_URL, data);
 export const reqDeleteAnimeSeed = (data: ReqAnime) =>
   request.post(API.DELETE_ANIME_SEED_URL, data);
+export const reqDownloadAnimeSeed = (data: Seed) =>
+  request.post(API.DOWNLOAD_ANIME_SEED_URL, data);

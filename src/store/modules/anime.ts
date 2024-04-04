@@ -7,8 +7,9 @@ import {
   reqTaskInfo,
   reqUpdateAnimeSeed,
   reqDeleteAnimeSeed,
+  reqDownloadAnimeSeed,
 } from "@/api/anime";
-import type { Anime, Seeds, Subgroups, Tasks } from "@/types";
+import type { Anime, Seeds, Seed, Subgroups, Tasks } from "@/types";
 import { ElMessage, ElLoading } from "element-plus";
 
 export const useAnimeStore = defineStore("anime", {
@@ -93,7 +94,6 @@ export const useAnimeStore = defineStore("anime", {
         ElMessage.error({
           message: error instanceof Error ? error.message : "种子更新失败",
         });
-      } finally {
       }
       return "ok";
     },
@@ -110,6 +110,35 @@ export const useAnimeStore = defineStore("anime", {
         return "ok";
       } else {
         return Promise.reject(new Error(result.data));
+      }
+    },
+    async downloadSeed(seed: Seed) {
+      const loading = ElLoading.service({
+        lock: true,
+        text: "正在创建任务...",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
+      try {
+        let result = await reqDownloadAnimeSeed(seed);
+        if (result.status == 200) {
+          loading.close();
+          await this.getSeed(this.reqAnimeData.mikan_id);
+          await this.getSubgroup();
+          await this.getTask(this.reqAnimeData.mikan_id);
+          ElMessage({
+            message: "开始下载",
+            type: "success",
+          });
+          return "ok";
+        } else {
+          loading.close();
+          return Promise.reject(new Error(result.data));
+        }
+      } catch (error) {
+        loading.close();
+        ElMessage.error({
+          message: error instanceof Error ? error.message : "任务创建失败",
+        });
       }
     },
   },

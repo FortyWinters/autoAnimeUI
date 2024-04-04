@@ -23,7 +23,6 @@
 import { useRoute } from 'vue-router'
 import { onMounted } from 'vue'
 import { useAnimeStore } from '@/store/modules/anime'
-import { ElMessage } from "element-plus";
 import Tab from './tab/index.vue'
 import {
     Star,
