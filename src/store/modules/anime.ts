@@ -8,8 +8,16 @@ import {
   reqUpdateAnimeSeed,
   reqDeleteAnimeSeed,
   reqDownloadAnimeSeed,
+  reqAnimeDetail,
 } from "@/api/anime";
-import type { Anime, Seeds, Seed, Subgroups, Tasks } from "@/types";
+import type {
+  Anime,
+  Seeds,
+  Seed,
+  Subgroups,
+  Tasks,
+  AnimeDetail,
+} from "@/types";
 import { ElMessage, ElLoading } from "element-plus";
 
 export const useAnimeStore = defineStore("anime", {
@@ -140,6 +148,21 @@ export const useAnimeStore = defineStore("anime", {
           message: error instanceof Error ? error.message : "任务创建失败",
         });
       }
+    },
+    async getAnimeDetail(mikan_id: number) {
+      let result = await reqAnimeDetail(mikan_id);
+      if (result.status == 200) {
+        this.animeInfo = result.data.anime_info;
+        this.seedInfo = result.data.seed_info;
+        this.subgroupInfo = result.data.subgroup_info;
+        this.taskInfo = result.data.task_info;
+      }
+    },
+    resetState() {
+      this.animeInfo = {} as Anime;
+      this.seedInfo = [] as Seeds;
+      this.subgroupInfo = [] as Subgroups;
+      this.taskInfo = [] as Tasks;
     },
   },
   getters: {

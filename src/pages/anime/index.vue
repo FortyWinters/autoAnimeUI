@@ -22,13 +22,12 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { onMounted } from 'vue'
+import { onMounted, onBeforeUnmount } from 'vue'
 import { useAnimeStore } from '@/store/modules/anime'
 import Tab from './tab/index.vue'
 import {
     Star,
     RefreshRight,
-    Download,
     Delete
 } from '@element-plus/icons-vue'
 import { storeToRefs } from 'pinia'
@@ -39,11 +38,12 @@ const { animeInfo, img_url } = storeToRefs(animeStore)
 let $route = useRoute()
 
 onMounted(() => {
-    animeStore.getAnime(Number($route.query.mikan_id))
-    animeStore.getSeed(Number($route.query.mikan_id))
-    animeStore.getSubgroup()
-    animeStore.getTask(Number($route.query.mikan_id))
+    animeStore.getAnimeDetail(Number($route.query.mikan_id))
 })
+
+onBeforeUnmount(() => {
+    animeStore.resetState();
+});
 
 async function subscribeAnime() {
     await animeStore.updateSubscribeStatus();
@@ -69,6 +69,7 @@ async function deleteAnimeSeed() {
 
         .anime-left {
             margin-right: 20px;
+
             img {
                 width: 180px;
                 height: 240px;

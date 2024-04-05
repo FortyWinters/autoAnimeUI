@@ -54,3 +54,10 @@ export type Tasks = Task[];
 export interface ReqAnime {
   mikan_id: number;
 }
+
+export interface AnimeDetail {
+  anime_info: Anime;
+  seed_info: Seeds;
+  subgroup_indo: Subgroups;
+  task_info: Tasks;
+}

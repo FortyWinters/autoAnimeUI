@@ -10,6 +10,7 @@ enum API {
   UPDATE_ANIME_SEED_URL = "/anime/seed/update",
   DELETE_ANIME_SEED_URL = "/anime/seed/delete",
   DOWNLOAD_ANIME_SEED_URL = "/anime/seed/download",
+  GET_ANIME_DETAIL_URL = "/anime/detail",
 }
 
 export const reqAnimeInfo = (mikan_id: number) =>
@@ -27,3 +28,5 @@ export const reqDeleteAnimeSeed = (data: ReqAnime) =>
   request.post(API.DELETE_ANIME_SEED_URL, data);
 export const reqDownloadAnimeSeed = (data: Seed) =>
   request.post(API.DOWNLOAD_ANIME_SEED_URL, data);
+export const reqAnimeDetail = (mikan_id: number) =>
+  request.get(`${API.GET_ANIME_DETAIL_URL}/${mikan_id}`);
