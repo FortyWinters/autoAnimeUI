@@ -6,7 +6,6 @@
 </template>
 
 <script setup lang="ts">
-import 'vue3-video-play/dist/style.css'
 const props = defineProps({
   videoPath: String
 });
