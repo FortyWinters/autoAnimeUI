@@ -8,12 +8,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watchEffect} from 'vue'
+import { ref, computed, watchEffect } from 'vue'
 import type { TabsPaneContext } from 'element-plus'
 import Seed from '../seed/index.vue'
 import { storeToRefs } from 'pinia'
 import { useAnimeStore } from '@/store/modules/anime'
+import { useRoute } from 'vue-router'
 
+const $route = useRoute()
 const activeTabName = ref('');
 let animeStore = useAnimeStore()
 const { animeSubgroupInfo, animeSeedInfo } = storeToRefs(animeStore)
@@ -32,10 +34,16 @@ const seedArrBySubgroupId = computed(() => {
 });
 
 watchEffect(() => {
-    if (seedArrBySubgroupId.value.length > 0) {
-        activeTabName.value = seedArrBySubgroupId.value[0].subgroup_id.toString();
+    if ($route.path === "/video") {
+        activeTabName.value = String($route.query.subgroup_id);
+    }
+    else {
+        if (seedArrBySubgroupId.value.length > 0) {
+            activeTabName.value = seedArrBySubgroupId.value[0].subgroup_id.toString();
+        }
     }
 });
+
 </script>
 
 <style scoped lang="scss">

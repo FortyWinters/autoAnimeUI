@@ -8,26 +8,27 @@
         <el-col :span="16">
             <el-row :gutter="1">
                 <div class="topbar">
-                    <router-link :to="'@/pages/home'" class="link">Home</router-link>
+                    <router-link :to="'/home'" class="link">Home</router-link>
                     <span> >> </span>
-                    <router-link :to="`@/pages/anime?/${mikanId}`" class="link">Anime</router-link>
+                    <router-link :to="`/anime?mikan_id=${mikan_id}`" class="link">Anime</router-link>
                     <span> >> </span>
-                    <router-link :to="`@/pages/video?/${mikanId, episode, subgroup_id}`" class="link">Video</router-link>
+                    <span class="link"> {{ animeInfo.anime_name }} - 第{{ $route.query.episode }}集 - {{ String(animeSubgroupInfo.find(subgroup => subgroup.subgroup_id === subgroup_id)?.subgroup_name) }}</span>
                 </div>
             </el-row>
             <el-row :gutter="1">
                 <div class="grid-content ep-bg-purple">
+                    <span>
+                        {{ `${baseUrl}/${animeInfo.anime_name}/${animeInfo.anime_name} - ${$route.query.episode} - ${String(animeSubgroupInfo.find(subgroup => subgroup.subgroup_id === subgroup_id)?.subgroup_name)}.mp4` }}
+                    </span>
                     <video controls autoplay="false" width="800" height="460">
-                        <source :src="videoPath" type="video/mp4">
+                        <source :src="`${baseUrl}/${animeInfo.anime_name}/${animeInfo.anime_name} - ${episode} - ${String(animeSubgroupInfo.find(subgroup => subgroup.subgroup_id === subgroup_id)?.subgroup_name)}.mp4`" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
                 </div>
             </el-row>
             <el-row :gutter="1">
-                <div class="grid-content ep-bg-purple">
-                    <div class="subgroup-tab" style="">
-                        <Tab :subgroupArr="subgroupArr" :mikanId="mikanId" />
-                    </div>
+                <div class="grid-content ep-bg-purple" style="width: 800px;">
+                    <Tab />
                 </div>
             </el-row>
         </el-col>
@@ -39,7 +40,6 @@
     </el-row>
     <el-row :gutter="1">
         <div class="grid-content ep-bg-purple" style="margin-top: 30px;">
-            <!-- <img :src="gifPath4" alt="GIF Image" style="width: 100px; height: 100px;"> -->
             <span class="text">BanG(umi) Dream! It's My AutoAnime ! ! ! ! !</span>
             <span style="font-size: 25px;"> ✌️🥵✌️</span>
         </div>
@@ -48,22 +48,42 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { reactive, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import Tab from '../anime/tab/index.vue'
+import { useAnimeStore } from '@/store/modules/anime'
+import { storeToRefs } from 'pinia'
 
+let animeStore = useAnimeStore()
+const { animeInfo, animeSubgroupInfo } = storeToRefs(animeStore)
 const $route = useRoute()
-let mikanId = $route.query.mikan_id
-let episode = $route.query.episode
-let subgroup_id = $route.query.subgroup_id
 
-let videoPath = ref("http://127.0.0.1:9999/迷宫饭/迷宫饭 - 13 - 喵萌奶茶屋.mp4")
+let mikan_id: number;
+let episode: number;
+let subgroup_id: number;
+let subgroup_name: String;
+let baseUrl = "http://127.0.0.1:9999"
+let videoPath = ref("")
 
-let subgroupArr = reactive([
-    { subgroup_id: 1, subgroup_name: "字幕组1" },
-    { subgroup_id: 2, subgroup_name: "字幕组2" },
-    { subgroup_id: 3, subgroup_name: "字幕组3" },
-    { subgroup_id: 4, subgroup_name: "字幕组4" }
-])
+
+animeStore.getAnime(Number($route.query.mikan_id))
+animeStore.getSeed(Number($route.query.mikan_id))
+animeStore.getSubgroup()
+animeStore.getTask(Number($route.query.mikan_id))
+
+mikan_id = Number($route.query.mikan_id)
+episode = Number($route.query.episode)
+subgroup_id = Number($route.query.subgroup_id)
+
+// onMounted(() => {
+//     animeStore.getAnime(Number($route.query.mikan_id))
+//     animeStore.getSeed(Number($route.query.mikan_id))
+//     animeStore.getSubgroup()
+//     animeStore.getTask(Number($route.query.mikan_id))
+
+//     mikan_id = Number($route.query.mikan_id)
+//     episode = Number($route.query.episode)
+//     subgroup_id = Number($route.query.subgroup_id)
+// })
 
 </script>
 
