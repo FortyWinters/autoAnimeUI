@@ -1,13 +1,11 @@
 <template>
     <div class="top">
-        <div class="content">
-            <div class="left">
-                <img src="../../assets/images/logo.png" alt="" @click="jumpToHome()">
-            </div>
-            <div class="right">
-                <Cascader />
-                <Menu />
-            </div>
+        <div class="left">
+            <img src="../../assets/images/logo.png" alt="" @click="jumpToHome()">
+        </div>
+        <div class="right">
+            <Cascader />
+            <Menu />
         </div>
     </div>
 </template>
@@ -28,36 +26,27 @@ function jumpToHome() {
 
 <style scoped lang="scss">
 .top {
-    position: fixed;
-    z-index: 999;
     width: 100%;
-    height: 54px;
-    background-color: #ffff;
+    flex-wrap: wrap;
     display: flex;
-    justify-content: center;
 
-    .content {
-        width: 1200px;
-        height: 54px;
-        background-color: #ffff;
+    .left {
+        flex: 5 5 auto;
         display: flex;
-        justify-content: space-between;
+        align-items: center;
+        height: 45px;
 
-        .left {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            img {
-                height: 54px;
-            }
+        img {
+            height: 45px;
         }
+    }
 
-        .right {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    .right {
+        height: 45px;
+        flex: 1 1 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 }
 </style>

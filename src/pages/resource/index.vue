@@ -1,5 +1,6 @@
 <template>
-    <div>我是下载页
+    <div>
+
     </div>
 </template>
 
@@ -7,4 +8,6 @@
 
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+
+</style>

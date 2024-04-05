@@ -12,10 +12,6 @@ export default createRouter({
       component: () => import("@/pages/list/index.vue"),
     },
     {
-      path: "/download",
-      component: () => import("@/pages/download/index.vue"),
-    },
-    {
       path: "/setting",
       component: () => import("@/pages/setting/index.vue"),
     },
@@ -26,6 +22,10 @@ export default createRouter({
     {
       path: "/video",
       component: () => import("@/pages/video/index.vue"),
+    },
+    {
+      path: "/resource",
+      component: () => import("@/pages/resource/index.vue"),
     },
     {
       path: "/",

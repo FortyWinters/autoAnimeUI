@@ -4,7 +4,8 @@
             <el-cascader v-model="value" :options="calendarList" :props="props" @change="handleChange"
                 placeholder="番剧列表" />
         </div>
-        <el-button :icon="RefreshRight" circle @click="updateAnimeList" :disabled="isDisabled" />
+        <el-button :icon="RefreshRight" circle @click="updateAnimeList" :disabled="isDisabled"
+            style="height: 24px;width: 24px;" />
     </div>
 </template>
 
@@ -17,7 +18,6 @@ import type { ReqAnimeBroadcast } from '@/types'
 import { useListStore } from '@/store/modules/list'
 
 let listStore = useListStore()
-
 const value = ref([])
 const $router = useRouter()
 const $route = useRoute()
@@ -52,16 +52,14 @@ async function updateAnimeList() {
 
 <style scoped lang="scss">
 .cascader-content {
-    width: 200px;
-    height: 54px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 10px;
+    margin-right: 5px;
 
     .cascader {
-        width: 150px;
-        margin-right: 10px;
+        width: 164px;
+        margin-right: 5px;
     }
 }
 </style>

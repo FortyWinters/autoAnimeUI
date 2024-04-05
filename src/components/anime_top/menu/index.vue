@@ -1,10 +1,10 @@
 <template>
     <div class="menu">
         <el-menu :default-active="$route.path" class="el-menu-demo" mode="horizontal" :ellipsis="false"
-            @select="handleSelect">
+            @select="handleSelect"
+            style="height: 45px;">
             <el-menu-item index="/home">订阅</el-menu-item>
-            <el-menu-item index="/">视频</el-menu-item>
-            <el-menu-item index="/download">下载</el-menu-item>
+            <el-menu-item index="/resource">视频</el-menu-item>
             <el-menu-item index="/setting">设置</el-menu-item>
         </el-menu>
     </div>
@@ -24,11 +24,9 @@ const handleSelect = (key: string) => {
 
 <style scoped lang="scss">
 .menu {
-    height: 100%;
-    width: 272px;
-
-    :deep(.el-menu) {
-        height: 54px;
+    :deep(.el-menu-item) {
+        padding-left: 17px;
+        padding-right: 17px;
     }
 }
 </style>

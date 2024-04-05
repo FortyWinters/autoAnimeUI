@@ -17,10 +17,10 @@ import { RouterView } from 'vue-router';
     display: flex;
     flex-direction: column;
     align-items: center;
+    width:100%;
 
     .content {
-        margin-top: 54px;
-        width: 1200px;
+        width: 100%;
         min-height: 700px;
     }
 }

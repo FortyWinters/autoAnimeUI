@@ -1,20 +1,21 @@
 <template>
-    <div class="anime-container">
-        <div class="anime-left">
-            <img :src="img_url" alt="">
+    <div class="anime-page-content">
+        <div class="anime-container">
+            <div class="anime-left">
+                <img :src="img_url" alt="">
+            </div>
+            <div class="anime-right">
+                <div class="anime-name">{{ animeInfo.anime_name }}</div>
+                <div class="anime-button">
+                    <el-button :icon="Star" circle type="warning" @click="subscribeAnime"
+                        :class="{ 'is-subscribed': animeInfo.subscribe_status == 1, 'is-not-subscribed': animeInfo.subscribe_status != 1 }" />
+                    <el-button type="primary" :icon="RefreshRight" circle @click="updateAnimeSeed" />
+                    <el-button type="info" :icon="Delete" circle @click="deleteAnimeSeed" />
+                </div>
+            </div>
         </div>
-        <div class="anime-right">
-            <div class="anime-name">{{ animeInfo.anime_name }}</div>
-            <div class="anime-button">
-                <el-button :icon="Star" circle type="warning" @click="subscribeAnime"
-                    :class="{ 'is-subscribed': animeInfo.subscribe_status == 1, 'is-not-subscribed': animeInfo.subscribe_status != 1 }" />
-                <el-button type="primary" :icon="RefreshRight" circle @click="updateAnimeSeed" />
-                <el-button type="success" :icon="Download" circle />
-                <el-button type="danger" :icon="Delete" circle @click="deleteAnimeSeed" />
-            </div>
-            <div class="subgroup-tab">
-                <Tab />
-            </div>
+        <div class="subgroup-tab">
+            <Tab />
         </div>
     </div>
 </template>
@@ -58,56 +59,59 @@ async function deleteAnimeSeed() {
 </script>
 
 <style scoped lang="scss">
-.anime-container {
-    display: flex;
-    height: 400px;
-    margin-top: 15px;
+.anime-page-content {
+    padding-left: 7px;
 
-    .anime-left {
-        margin-right: 20px;
-        width: 200px;
-        height: 100%;
+    .anime-container {
         display: flex;
-        justify-content: center;
+        margin-top: 15px;
+        margin-bottom: 15px;
 
-        img {
-            width: 180px;
-            height: 240px;
+        .anime-left {
+            margin-right: 20px;
+            img {
+                width: 180px;
+                height: 240px;
+            }
+        }
+
+        .anime-right {
+            width: 70%;
+            height: 100%;
+
+            .anime-name {
+                font-size: 24px;
+                margin-bottom: 10px;
+            }
+
+            .anime-button {
+                margin-bottom: 40px;
+
+                .is-subscribed {
+                    background-color: red;
+                    border-color: red;
+                }
+
+                .is-subscribed:hover {
+                    background-color: rgb(249, 104, 104);
+                    border-color: rgb(249, 104, 104);
+                }
+
+                .is-not-subscribed {
+                    background-color: #d6d6d6;
+                    border-color: #d6d6d6;
+                }
+
+                .is-not-subscribed:hover {
+                    background-color: red;
+                    border-color: red;
+                }
+            }
         }
     }
 
-    .anime-right {
-        width: 70%;
-        height: 100%;
-
-        .anime-name {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-
-        .anime-button {
-            margin-bottom: 40px;
-
-            .is-subscribed {
-                background-color: red;
-                border-color: red;
-            }
-
-            .is-subscribed:hover {
-                background-color: rgb(249, 104, 104);
-                border-color: rgb(249, 104, 104);
-            }
-
-            .is-not-subscribed {
-                background-color: #d6d6d6;
-                border-color: #d6d6d6;
-            }
-
-            .is-not-subscribed:hover {
-                background-color: red;
-                border-color: red;
-            }
-        }
+    .subgroup-tab {
+        min-width: 100px;
     }
 }
-</style>@/store/modules/anime
+</style>

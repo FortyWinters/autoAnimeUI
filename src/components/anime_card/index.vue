@@ -88,7 +88,7 @@ function jumpToAnime(mikan_id: number) {
     .anime-card {
         width: 180px;
         height: 280px;
-        margin: 15px 10px;
+        margin: 10px 7px;
 
         :deep(.el-card__body) {
             padding: 0px;
@@ -128,8 +128,8 @@ function jumpToAnime(mikan_id: number) {
                     }
 
                     .is-subscribed:hover {
-                        background-color: rgb(234, 22, 22);
-                        border-color: rgb(234, 22, 22);
+                        background-color: rgb(249, 104, 104);
+                        border-color: rgb(249, 104, 104);
                         ;
                     }
 
