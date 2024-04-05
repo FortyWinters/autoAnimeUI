@@ -143,7 +143,8 @@ export const useAnimeStore = defineStore("anime", {
     },
   },
   getters: {
-    img_url: (state) => `path/${state.animeInfo.img_url}`,
+    img_url: (state) =>
+      `src/assets/images/anime_list/${state.animeInfo.img_url}`,
     reqSubscribeAnimeData: (state) => {
       return {
         mikan_id: state.animeInfo.mikan_id,
