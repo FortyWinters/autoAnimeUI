@@ -24,7 +24,6 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-import { storeToRefs } from 'pinia'
 import { useAnimeStore } from '@/store/modules/anime';
 import type { Seed } from '@/types'
 

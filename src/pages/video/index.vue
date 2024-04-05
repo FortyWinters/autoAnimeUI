@@ -10,20 +10,16 @@
                 <div class="topbar">
                     <router-link :to="'/home'" class="link">Home</router-link>
                     <span> >> </span>
-                    <router-link :to="`/anime?mikan_id=${mikan_id}`" class="link">Anime</router-link>
+                    <router-link :to="`/anime?mikan_id=${$route.query.mikan_id}`" class="link">Anime</router-link>
                     <span> >> </span>
-                    <span class="link"> {{ animeInfo.anime_name }} - 第{{ $route.query.episode }}集 - {{ String(animeSubgroupInfo.find(subgroup => subgroup.subgroup_id === subgroup_id)?.subgroup_name) }}</span>
+                    <span class="link"> {{ animeInfo.anime_name }} - 第{{ $route.query.episode }}集 - {{ subgroup_name
+                        }}</span>
                 </div>
+                <el-divider />
             </el-row>
             <el-row :gutter="1">
                 <div class="grid-content ep-bg-purple">
-                    <span>
-                        {{ `${baseUrl}/${animeInfo.anime_name}/${animeInfo.anime_name} - ${$route.query.episode} - ${String(animeSubgroupInfo.find(subgroup => subgroup.subgroup_id === subgroup_id)?.subgroup_name)}.mp4` }}
-                    </span>
-                    <video controls autoplay="false" width="800" height="460">
-                        <source :src="`${baseUrl}/${animeInfo.anime_name}/${animeInfo.anime_name} - ${episode} - ${String(animeSubgroupInfo.find(subgroup => subgroup.subgroup_id === subgroup_id)?.subgroup_name)}.mp4`" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
+                    <Player :videoPath="videoPath" :key="videoPath" />
                 </div>
             </el-row>
             <el-row :gutter="1">
@@ -51,39 +47,31 @@ import { useRoute } from 'vue-router'
 import { onMounted, ref, computed } from 'vue'
 import Tab from '../anime/tab/index.vue'
 import { useAnimeStore } from '@/store/modules/anime'
+import Player from './player/index.vue'
 import { storeToRefs } from 'pinia'
+
+const $route = useRoute()
 
 let animeStore = useAnimeStore()
 const { animeInfo, animeSubgroupInfo } = storeToRefs(animeStore)
-const $route = useRoute()
 
-let mikan_id: number;
-let episode: number;
-let subgroup_id: number;
-let subgroup_name: String;
-let baseUrl = "http://127.0.0.1:9999"
-let videoPath = ref("")
+onMounted(() => {
+    animeStore.getAnime(Number($route.query.mikan_id))
+    animeStore.getSeed(Number($route.query.mikan_id))
+    animeStore.getSubgroup()
+    animeStore.getTask(Number($route.query.mikan_id))
+})
 
+const baseUrl = "http://127.0.0.1:9999"
 
-animeStore.getAnime(Number($route.query.mikan_id))
-animeStore.getSeed(Number($route.query.mikan_id))
-animeStore.getSubgroup()
-animeStore.getTask(Number($route.query.mikan_id))
+const episode = ref($route.query.episode);
+const subgroup_name = computed(() => {
+    return animeSubgroupInfo.value.find(subgroup => subgroup.subgroup_id === Number($route.query.subgroup_id))?.subgroup_name
+})
 
-mikan_id = Number($route.query.mikan_id)
-episode = Number($route.query.episode)
-subgroup_id = Number($route.query.subgroup_id)
-
-// onMounted(() => {
-//     animeStore.getAnime(Number($route.query.mikan_id))
-//     animeStore.getSeed(Number($route.query.mikan_id))
-//     animeStore.getSubgroup()
-//     animeStore.getTask(Number($route.query.mikan_id))
-
-//     mikan_id = Number($route.query.mikan_id)
-//     episode = Number($route.query.episode)
-//     subgroup_id = Number($route.query.subgroup_id)
-// })
+const videoPath = computed(() => {
+    return baseUrl + '/' + animeInfo.value.anime_name + '/' + animeInfo.value.anime_name + " - " + episode.value + " - " + subgroup_name.value + ".mp4"
+})
 
 </script>
 
@@ -91,7 +79,7 @@ subgroup_id = Number($route.query.subgroup_id)
 .topbar {
     font-family: Serif;
     margin-left: 0px;
-    margin-bottom: 10px;
+    margin-top: 20px;
     height: 15px;
     line-height: 30px;
 }
