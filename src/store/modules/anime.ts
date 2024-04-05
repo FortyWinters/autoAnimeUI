@@ -9,6 +9,8 @@ import {
   reqDeleteAnimeSeed,
   reqDownloadAnimeSeed,
   reqAnimeDetail,
+  reqDeleteAnimeTask,
+  reqUpdateTask,
 } from "@/api/anime";
 import type {
   Anime,
@@ -149,6 +151,35 @@ export const useAnimeStore = defineStore("anime", {
         });
       }
     },
+    async deleteTask(seed: Seed) {
+      const loading = ElLoading.service({
+        lock: true,
+        text: "正在删除任务...",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
+      try {
+        let result = await reqDeleteAnimeTask(seed);
+        if (result.status == 200) {
+          loading.close();
+          await this.getSeed(this.reqAnimeData.mikan_id);
+          await this.getSubgroup();
+          await this.getTask(this.reqAnimeData.mikan_id);
+          ElMessage({
+            message: "删除成功",
+            type: "success",
+          });
+          return "ok";
+        } else {
+          loading.close();
+          return Promise.reject(new Error(result.data));
+        }
+      } catch (error) {
+        loading.close();
+        ElMessage.error({
+          message: error instanceof Error ? error.message : "删除失败",
+        });
+      }
+    },
     async getAnimeDetail(mikan_id: number) {
       let result = await reqAnimeDetail(mikan_id);
       if (result.status == 200) {
@@ -163,6 +194,9 @@ export const useAnimeStore = defineStore("anime", {
       this.seedInfo = [] as Seeds;
       this.subgroupInfo = [] as Subgroups;
       this.taskInfo = [] as Tasks;
+    },
+    async updateTask() {
+      await reqUpdateTask();
     },
   },
   getters: {
