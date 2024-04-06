@@ -115,6 +115,13 @@ function episodeClass(seed_status: number): string {
         border: 1px solid rgb(220, 217, 217);
     }
 
+    .episode:hover,
+    .episode-used:hover,
+    .episode-downloading:hover,
+    .episode-downloaded:hover {
+        box-shadow: 2px 2px 2px 0px rgba(236, 236, 236, 0.75);
+    }
+
     .episode-downloading {
         background-color: rgb(88, 202, 255);
         border: 0px;

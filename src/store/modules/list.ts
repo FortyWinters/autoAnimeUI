@@ -51,7 +51,8 @@ export const useListStore = defineStore("list", {
       } catch (error) {
         loading.close();
         ElMessage.error({
-          message: error instanceof Error ? error.message : "番剧列表更新失败",
+          message: "番剧列表更新失败",
+          // message: error instanceof Error ? error.message : "番剧列表更新失败",
         });
       }
       return "ok";
