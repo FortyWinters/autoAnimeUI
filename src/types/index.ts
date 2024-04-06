@@ -28,6 +28,7 @@ export interface Seed {
   seed_url: string;
   seed_status: number;
   seed_size: string;
+  progress?: number;
 }
 // 0: unused
 // 1: used

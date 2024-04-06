@@ -3,9 +3,12 @@
         <el-dropdown v-for="s in seedArr" :key="s.seed_url">
             <div class="episode-container">
                 <div :class="episodeClass(s.seed_status)">
-                    <span style="font-size: 15px; margin: 10px 10px;" :title="s.seed_name">
+                    <span v-if="s.seed_status !== 2" style="font-size: 13px; margin: 10px 10px;" :title="s.seed_name">
                         {{ s.episode === -1 ? '合 集' : `第 ${s.episode} 集` }}
                     </span>
+                    <div v-else class="download-bar" :title="s.seed_name">
+                        <el-progress :text-inside="true" :stroke-width="25" :percentage="s.progress || 45" />
+                    </div>
                 </div>
             </div>
             <template #dropdown>
@@ -55,7 +58,7 @@ async function deleteAnimeTask(seed: Seed) {
 function episodeClass(seed_status: number): string {
     switch (seed_status) {
         case 1:
-            return 'episode-used'; // 种子已使用，但不存在对应task，视为种子失效
+            return 'episode-used'; // 种子已使用，但不存在对应task
         case 2:
             return 'episode-downloading'; // 下载中
         case 3:
@@ -73,6 +76,23 @@ function episodeClass(seed_status: number): string {
 
 .link:visited {
     color: inherit;
+}
+
+.download-bar {
+    font-size: 15px;
+    margin: 10px 10px;
+    width: 80px;
+
+    :deep(.el-progress-bar__outer) {
+        border-radius: 3px;
+        width: 80px;
+        border: 1px solid rgb(220, 217, 217);
+
+        .el-progress-bar__inner {
+            border-radius: 3px;
+            background-color: rgb(88, 202, 255);
+        }
+    }
 }
 
 .episode-container {
