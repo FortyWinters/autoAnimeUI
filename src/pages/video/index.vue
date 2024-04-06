@@ -72,9 +72,10 @@ const subgroup_name = computed(() => {
 })
 
 const videoPath = computed(() => {
-    return baseUrl + '/' + animeInfo.value.anime_name + '/' + animeInfo.value.anime_name + " - " + $route.query.episode + " - " + subgroup_name.value + ".mp4"
+    return baseUrl + '/' + animeInfo.value.anime_name + "(" + $route.query.mikan_id + ")" + '/' + animeInfo.value.anime_name + " - " + $route.query.episode + " - " + subgroup_name.value + ".mp4"
 })
 
+console.log(animeInfo.value.anime_name)
 </script>
 
 <style scoped lang="scss">
