@@ -7,7 +7,7 @@
                         {{ s.episode === -1 ? '合 集' : `第 ${s.episode} 集` }}
                     </span>
                     <div v-else class="download-bar" :title="s.seed_name">
-                        <el-progress :text-inside="true" :stroke-width="25" :percentage="s.progress || 45" />
+                        <el-progress :text-inside="true" :stroke-width="25" :percentage="s.progress" />
                     </div>
                 </div>
             </div>

@@ -12,14 +12,7 @@ import {
   reqDeleteAnimeTask,
   reqUpdateTask,
 } from "@/api/anime";
-import type {
-  Anime,
-  Seeds,
-  Seed,
-  Subgroups,
-  Tasks,
-  AnimeDetail,
-} from "@/types";
+import type { Anime, Seeds, Seed, Subgroups, Tasks, qbTask } from "@/types";
 import { ElMessage, ElLoading } from "element-plus";
 
 export const useAnimeStore = defineStore("anime", {
@@ -29,6 +22,9 @@ export const useAnimeStore = defineStore("anime", {
       seedInfo: [] as Seeds,
       subgroupInfo: [] as Subgroups,
       taskInfo: [] as Tasks,
+      ws: null as WebSocket | null,
+      qbTaskInfo: [] as qbTask[],
+      isConnected: false,
     };
   },
   actions: {
@@ -133,7 +129,6 @@ export const useAnimeStore = defineStore("anime", {
         if (result.status == 200) {
           loading.close();
           await this.getSeed(this.reqAnimeData.mikan_id);
-          await this.getSubgroup();
           await this.getTask(this.reqAnimeData.mikan_id);
           ElMessage({
             message: "开始下载",
@@ -162,7 +157,6 @@ export const useAnimeStore = defineStore("anime", {
         if (result.status == 200) {
           loading.close();
           await this.getSeed(this.reqAnimeData.mikan_id);
-          await this.getSubgroup();
           await this.getTask(this.reqAnimeData.mikan_id);
           ElMessage({
             message: "删除成功",
@@ -197,6 +191,72 @@ export const useAnimeStore = defineStore("anime", {
     },
     async updateTask() {
       await reqUpdateTask();
+    },
+    connectWs() {
+      if (this.ws == null && !this.isConnected) {
+        console.log("connected sucesseed");
+        this.ws = new WebSocket("ws://127.0.0.1:8080/v2/ws/");
+
+        this.ws.onopen = () => {
+          this.isConnected = true;
+          console.log("WebSocket connection opened!!!");
+          console.log("(2)ws建立后,立刻发送新的torrent_url");
+          this.getTaskProgress(
+            JSON.stringify(
+              this.taskInfo.filter((task) => task.qb_task_status === 0)
+            )
+          );
+        };
+        this.ws.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            if (Array.isArray(data)) {
+              let qbTaskList: qbTask[] = data.map((qbTask) => ({
+                torrent_name: qbTask.torrent_name,
+                progress: qbTask.progress,
+              }));
+              this.qbTaskInfo = qbTaskList;
+              console.log(this.qbTaskInfo);
+            } else {
+              console.error("Recevied data is not an array", data);
+            }
+          } catch (error) {
+            console.error("Failed to parse WebSocket data", error);
+          }
+        };
+        this.ws.onerror = (error) => {
+          console.error("WebSocket Error:", error);
+        };
+        this.ws.onclose = () => {
+          this.isConnected = false;
+          console.log("WebSocket connection closed!!!");
+        };
+      } else {
+        console.log("no available webSocket");
+      }
+    },
+    disConnectWs() {
+      if (this.ws && this.isConnected) {
+        this.ws.close();
+        this.ws = null;
+        this.isConnected = false;
+        console.log("disConnect successeed");
+      } else {
+        console.log("disConnect failed, no available webSocket");
+      }
+    },
+    getTaskProgress(data: string) {
+      if (this.ws && this.isConnected) {
+        this.ws.send(data);
+      }
+    },
+    seedStopSignal() {
+      console.log("发送停止信号");
+      if (this.ws && this.isConnected) {
+        this.ws.send("STOP");
+        this.isConnected = false;
+        this.ws = null;
+      }
     },
   },
   getters: {
@@ -236,7 +296,27 @@ export const useAnimeStore = defineStore("anime", {
               updatedSeedStatus = 3; // downloaded
               break;
           }
-          return { ...seed, seed_status: updatedSeedStatus };
+          seed = { ...seed, seed_status: updatedSeedStatus };
+        }
+
+        const correspondingQbTask = state.qbTaskInfo.find((qbTask) =>
+          seed.seed_url.includes(String(qbTask.torrent_name.split("/").pop()))
+        );
+
+        if (seed.seed_status === 2 && correspondingQbTask) {
+          seed = {
+            ...seed,
+            progress: Math.round(
+              parseFloat(correspondingQbTask.progress.replace("%", "").trim())
+            ),
+          };
+          if (
+            Math.round(
+              parseFloat(correspondingQbTask.progress.replace("%", "").trim())
+            ) === 100
+          ) {
+            // seed = { ...seed, seed_status: 3 };
+          }
         }
         return seed;
       });

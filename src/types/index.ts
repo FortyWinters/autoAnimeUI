@@ -62,3 +62,10 @@ export interface AnimeDetail {
   subgroup_indo: Subgroups;
   task_info: Tasks;
 }
+
+export interface qbTask {
+  torrent_name: string;
+  progress: string;
+}
+
+export type qbTasks = Task[];

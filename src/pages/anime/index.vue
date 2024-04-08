@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { onMounted, onBeforeUnmount } from 'vue'
+import { onMounted, onBeforeUnmount, watch } from 'vue'
 import { useAnimeStore } from '@/store/modules/anime'
 import Tab from './tab/index.vue'
 import {
@@ -33,17 +33,45 @@ import {
 import { storeToRefs } from 'pinia'
 
 let animeStore = useAnimeStore()
-const { animeInfo, img_url } = storeToRefs(animeStore)
+const { animeInfo, img_url, taskInfo } = storeToRefs(animeStore)
 
 let $route = useRoute()
 
 onMounted(() => {
+    console.log("(onMounted)获得动画与种子与任务信息")
     animeStore.getAnimeDetail(Number($route.query.mikan_id))
 })
 
 onBeforeUnmount(() => {
-    animeStore.resetState();
-});
+    if (taskInfo.value.filter((task) => task.qb_task_status === 0).length !== 0) {
+        console.log("(onBeforeUnmount)离开anime页面,发送stop信号,切断ws")
+        animeStore.seedStopSignal();
+    }
+})
+
+watch(
+    () => animeStore.taskInfo,
+    (currentTasks, previousTasks) => {
+        const tasksWithStatusZero = currentTasks.filter(task => task.qb_task_status === 0);
+        const previousTasksWithStatusZero = previousTasks ? previousTasks.filter(task => task.qb_task_status === 0) : [];
+
+        if (tasksWithStatusZero.length !== previousTasksWithStatusZero.length) {
+            if (tasksWithStatusZero.length !== 0) {
+                console.log("(0)当taskInfo变化,先切断旧ws")
+                animeStore.seedStopSignal();
+                console.log("(1)如果taskInfo中存在状态为0的任务,就建立ws")
+                animeStore.connectWs()
+            } else {
+                console.log("(1)如果taskInfo中不存在状态为0的任务,就切断ws(当最后一个任务完成)")
+                animeStore.seedStopSignal()
+            }
+        }
+    },
+    {
+        deep: true,
+        immediate: true,
+    }
+);
 
 async function subscribeAnime() {
     await animeStore.updateSubscribeStatus();
