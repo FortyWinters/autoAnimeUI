@@ -14,6 +14,7 @@ import {
 } from "@/api/anime";
 import type { Anime, Seeds, Seed, Subgroups, Tasks, qbTask } from "@/types";
 import { ElMessage, ElLoading } from "element-plus";
+import { watch, onBeforeUnmount } from "vue";
 
 export const useAnimeStore = defineStore("anime", {
   state() {
@@ -25,6 +26,7 @@ export const useAnimeStore = defineStore("anime", {
       ws: null as WebSocket | null,
       qbTaskInfo: [] as qbTask[],
       isConnected: false,
+      activeSubgroupId: -1,
     };
   },
   actions: {
@@ -250,13 +252,53 @@ export const useAnimeStore = defineStore("anime", {
         this.ws.send(data);
       }
     },
-    seedStopSignal() {
+    sendStopSignal() {
       console.log("发送停止信号");
       if (this.ws && this.isConnected) {
         this.ws.send("STOP");
         this.isConnected = false;
         this.ws = null;
       }
+    },
+    setupWatchers() {
+      const stopWatchTaskInfo = watch(
+        () => this.taskInfo,
+        (currentTasks, previousTasks) => {
+          const tasksWithStatusZero = currentTasks.filter(
+            (task) => task.qb_task_status === 0
+          );
+          const previousTasksWithStatusZero = previousTasks
+            ? previousTasks.filter((task) => task.qb_task_status === 0)
+            : [];
+
+          if (
+            tasksWithStatusZero.length !== previousTasksWithStatusZero.length
+          ) {
+            if (tasksWithStatusZero.length !== 0) {
+              console.log("(0)当taskInfo变化,先切断旧ws");
+              this.sendStopSignal();
+              console.log("(1)如果taskInfo中存在状态为0的任务,就建立ws");
+              this.connectWs();
+            } else {
+              console.log(
+                "(1)如果taskInfo中不存在状态为0的任务,就切断ws(当最后一个任务完成)"
+              );
+              this.sendStopSignal();
+            }
+          }
+        },
+        {
+          deep: true,
+          immediate: true,
+        }
+      );
+
+      onBeforeUnmount(() => {
+        stopWatchTaskInfo();
+      });
+    },
+    setActiveSubgroupId(subgroupId: number) {
+      this.activeSubgroupId = subgroupId;
     },
   },
   getters: {
@@ -304,18 +346,12 @@ export const useAnimeStore = defineStore("anime", {
         );
 
         if (seed.seed_status === 2 && correspondingQbTask) {
-          seed = {
-            ...seed,
-            progress: Math.round(
-              parseFloat(correspondingQbTask.progress.replace("%", "").trim())
-            ),
-          };
-          if (
-            Math.round(
-              parseFloat(correspondingQbTask.progress.replace("%", "").trim())
-            ) === 100
-          ) {
-            // seed = { ...seed, seed_status: 3 };
+          const progress = Math.round(
+            parseFloat(correspondingQbTask.progress.replace("%", "").trim())
+          );
+          seed = { ...seed, progress: progress };
+          if (progress === 100) {
+            seed.seed_status = 3;
           }
         }
         return seed;

@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watchEffect } from 'vue'
+import { ref, computed, watchEffect, onBeforeUnmount} from 'vue'
 import type { TabsPaneContext } from 'element-plus'
 import Seed from '../seed/index.vue'
 import { storeToRefs } from 'pinia'
@@ -18,10 +18,21 @@ import { useRoute } from 'vue-router'
 const $route = useRoute()
 const activeTabName = ref('');
 let animeStore = useAnimeStore()
-const { animeSubgroupInfo, animeSeedInfo } = storeToRefs(animeStore)
+const { animeSubgroupInfo, animeSeedInfo, activeSubgroupId } = storeToRefs(animeStore)
 
 const handleClick = (tab: TabsPaneContext) => {
-    console.log(tab.props.name)
+    // 检查 tab.props?.name 是否为 undefined 并确保它是一个数字
+    if (typeof tab.props?.name !== 'undefined') {
+        const subgroupId = Number(tab.props.name);
+        // 确保转换后的 subgroupId 是有效的数字
+        if (!isNaN(subgroupId)) {
+            animeStore.setActiveSubgroupId(subgroupId);
+        } else {
+            console.error('subgroupId is not a valid number');
+        }
+    } else {
+        console.error('subgroupId is undefined');
+    }
 }
 
 const seedArrBySubgroupId = computed(() => {
@@ -39,11 +50,18 @@ watchEffect(() => {
     }
     else {
         if (seedArrBySubgroupId.value.length > 0) {
-            activeTabName.value = seedArrBySubgroupId.value[0].subgroup_id.toString();
+            if (activeSubgroupId.value !== -1) {
+                activeTabName.value = activeSubgroupId.value.toString()
+            } else {
+                activeTabName.value = seedArrBySubgroupId.value[0].subgroup_id.toString();
+            }
         }
     }
 });
 
+onBeforeUnmount(() => {
+    activeSubgroupId.value = -1
+})
 </script>
 
 <style scoped lang="scss">
