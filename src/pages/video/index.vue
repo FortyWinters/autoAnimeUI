@@ -19,7 +19,7 @@
             <el-col :span="16">
                 <el-row :gutter="0">
                     <div class="grid-content ep-bg-purple">
-                        <Player :videoPath="videoPath" :key="videoPath" class="player" />
+                        <Player :videoPath="videoPath" :subtitlePath="subtitlePath" :key="videoPath" class="player" />
                     </div>
                 </el-row>
             </el-col>
@@ -32,7 +32,7 @@
             <el-col :span="1" />
         </el-row>
     </div>
-    
+
     <div class="tab">
         <Tab />
     </div>
@@ -47,35 +47,74 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, watch, watchEffect } from 'vue'
 import Tab from '../anime/tab/index.vue'
 import { useAnimeStore } from '@/store/modules/anime'
 import Player from './player/index.vue'
 import { storeToRefs } from 'pinia'
+import { getAnimeTask, getSubtitlePath } from '@/api/video'
 
 const $route = useRoute()
-
-let animeStore = useAnimeStore()
+const animeStore = useAnimeStore()
 const { animeInfo, animeSubgroupInfo } = storeToRefs(animeStore)
+
+interface AnimeTask {
+    filename: string;
+    id: number;
+    mikan_id: number;
+    qb_task_status: number;
+    rename_status: number;
+    torrent_name: string;
+}
+
+interface SubtitlePath {
+    subtitle: string
+}
+
+const baseUrl = "/file_server"
+
+let anime_task = ref<AnimeTask>();
+let subtitle_path = ref<SubtitlePath>();
+let subgroup_name = ref<string | undefined>(undefined);
+let videoPath = ref<string | undefined>(undefined);
+let subtitlePath = ref<string | undefined>(undefined);
 
 onMounted(() => {
     animeStore.getAnime(Number($route.query.mikan_id))
     animeStore.getSeed(Number($route.query.mikan_id))
     animeStore.getSubgroup()
     animeStore.getTask(Number($route.query.mikan_id))
+    doInit()
 })
 
-const baseUrl = "http://127.0.0.1:9999"
+const doInit = async () => {
+    let anime_res = await getAnimeTask({ torrent_name: String($route.query.torrent_name) })
+    anime_task.value = anime_res.data
 
-const subgroup_name = computed(() => {
-    return animeSubgroupInfo.value.find(subgroup => subgroup.subgroup_id === Number($route.query.subgroup_id))?.subgroup_name
-})
+    let res = await getSubtitlePath({ video_name: String(anime_task.value?.filename) })
+    subtitle_path.value = res.data
+}
 
-const videoPath = computed(() => {
-    return baseUrl + '/' + animeInfo.value.anime_name + "(" + $route.query.mikan_id + ")" + '/' + animeInfo.value.anime_name + " - " + $route.query.episode + " - " + subgroup_name.value + ".mp4"
-})
+watch(
+    [() => $route.query, anime_task, subtitle_path],
+    ([query, newAnimeTask, newSubtitlePath], [oldQuery, oldAnimeTask, oldSubtitlePath]) => {
+        if (query !== oldQuery) {
+            animeStore.getAnime(Number(query.mikan_id));
+            animeStore.getSeed(Number(query.mikan_id));
+            animeStore.getSubgroup();
+            animeStore.getTask(Number(query.mikan_id));
+            doInit();
+        }
 
-console.log(animeInfo.value.anime_name)
+        else if (newAnimeTask !== undefined && newSubtitlePath !== undefined) {
+            subgroup_name.value = animeSubgroupInfo.value.find(subgroup => subgroup.subgroup_id === Number(query.subgroup_id))?.subgroup_name;
+            videoPath.value = baseUrl + '/' + animeInfo.value.anime_name + "(" + query.mikan_id + ")" + '/' + newAnimeTask?.filename;
+            subtitlePath.value = baseUrl + '/' + animeInfo.value.anime_name + "(" + query.mikan_id + ")" + '/' + newSubtitlePath;
+        }
+    }
+);
+
+
 </script>
 
 <style scoped lang="scss">

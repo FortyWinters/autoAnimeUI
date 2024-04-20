@@ -69,3 +69,14 @@ export interface qbTask {
 }
 
 export type qbTasks = Task[];
+
+export interface ReqAnimeTask {
+  torrent_name: string;
+}
+
+export interface ReqSubtitlePath {
+  video_name: string;
+}
+export interface ReqSubgroupId {
+  id: number;
+}

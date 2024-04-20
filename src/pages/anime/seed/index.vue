@@ -15,7 +15,7 @@
                 <el-dropdown-menu>
                     <el-dropdown-item command="download" @click="downloadAnimeSeed(s)"
                         :disabled="s.seed_status !== 0 && s.seed_status !== 1">下载</el-dropdown-item>
-                    <el-dropdown-item command="play" @click="jumpToVideo(s.mikan_id, s.episode, s.subgroup_id)"
+                    <el-dropdown-item command="play" @click="jumpToVideo(s.mikan_id, s.episode, s.subgroup_id, s.seed_url)"
                         :disabled="s.seed_status !== 3"> 网页播放
                     </el-dropdown-item>
                     <el-dropdown-item command="delete" divided @click="deleteAnimeTask(s)"
@@ -36,13 +36,14 @@ let animeStore = useAnimeStore()
 defineProps(['seedArr'])
 const $router = useRouter()
 
-function jumpToVideo(mikan_id: number, episode: number, subgroup_id: number) {
+function jumpToVideo(mikan_id: number, episode: number, subgroup_id: number, seed_url: string) {
     $router.push({
         path: '/video',
         query: {
             mikan_id: mikan_id,
             episode: episode,
             subgroup_id: subgroup_id,
+            torrent_name: seed_url.split("/")[3],
         }
     })
 }

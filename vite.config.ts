@@ -13,10 +13,16 @@ export default defineConfig({
     },
   },
   server: {
+    host: "0.0.0.0",
     proxy: {
       "/v2": {
         target: "http://127.0.0.1:8080",
         changeOrigin: true,
+      },
+      '/file_server': {
+        target: 'http://127.0.0.1:9999',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/file_server/, ''),
       },
     },
   },
