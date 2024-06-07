@@ -2,7 +2,7 @@
     <div class="anime-card-container">
         <el-card v-for="a in animeList" :key="a.mikan_id" class="anime-card" shadow="hover">
             <div class="card-top" @click="jumpToAnime(a.mikan_id)">
-                <img :src="`src/assets/images/anime_list/${a.img_url}`" alt="">
+                <el-image :src="`src/assets/images/anime_list/${a.img_url}`" style="width: 180px; height: 240px;" />
             </div>
             <div class="card-bottom">
                 <div class="card-left">
@@ -96,11 +96,6 @@ function jumpToAnime(mikan_id: number) {
             .card-top {
                 width: 100%;
                 height: 240px;
-
-                img {
-                    height: 100%;
-                    width: 100%;
-                }
             }
 
             .card-bottom {

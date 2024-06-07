@@ -196,13 +196,10 @@ export const useAnimeStore = defineStore("anime", {
     },
     connectWs() {
       if (this.ws == null && !this.isConnected) {
-        console.log("connected sucesseed");
         this.ws = new WebSocket("ws://127.0.0.1:8080/v2/ws/");
 
         this.ws.onopen = () => {
           this.isConnected = true;
-          console.log("WebSocket connection opened!!!");
-          console.log("(2)ws建立后,立刻发送新的torrent_url");
           this.getTaskProgress(
             JSON.stringify(
               this.taskInfo.filter((task) => task.qb_task_status === 0)
@@ -218,7 +215,6 @@ export const useAnimeStore = defineStore("anime", {
                 progress: qbTask.progress,
               }));
               this.qbTaskInfo = qbTaskList;
-              console.log(this.qbTaskInfo);
             } else {
               console.error("Recevied data is not an array", data);
             }
@@ -231,10 +227,9 @@ export const useAnimeStore = defineStore("anime", {
         };
         this.ws.onclose = () => {
           this.isConnected = false;
-          console.log("WebSocket connection closed!!!");
         };
       } else {
-        console.log("no available webSocket");
+        console.log("websocket connect failed, no available webSocket");
       }
     },
     disConnectWs() {
@@ -242,9 +237,8 @@ export const useAnimeStore = defineStore("anime", {
         this.ws.close();
         this.ws = null;
         this.isConnected = false;
-        console.log("disConnect successeed");
       } else {
-        console.log("disConnect failed, no available webSocket");
+        console.log("websocket disconnect failed, no available webSocket");
       }
     },
     getTaskProgress(data: string) {
@@ -253,7 +247,6 @@ export const useAnimeStore = defineStore("anime", {
       }
     },
     sendStopSignal() {
-      console.log("发送停止信号");
       if (this.ws && this.isConnected) {
         this.ws.send("STOP");
         this.isConnected = false;
@@ -275,14 +268,9 @@ export const useAnimeStore = defineStore("anime", {
             tasksWithStatusZero.length !== previousTasksWithStatusZero.length
           ) {
             if (tasksWithStatusZero.length !== 0) {
-              console.log("(0)当taskInfo变化,先切断旧ws");
               this.sendStopSignal();
-              console.log("(1)如果taskInfo中存在状态为0的任务,就建立ws");
               this.connectWs();
             } else {
-              console.log(
-                "(1)如果taskInfo中不存在状态为0的任务,就切断ws(当最后一个任务完成)"
-              );
               this.sendStopSignal();
             }
           }

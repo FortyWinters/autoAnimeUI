@@ -2,7 +2,7 @@
     <div class="anime-page-content">
         <div class="anime-container">
             <div class="anime-left">
-                <img :src="img_url" alt="">
+                <el-image :src="img_url" style="width: 180px; height: 240px;" />
             </div>
             <div class="anime-right">
                 <div class="anime-name">{{ animeInfo.anime_name }}</div>
@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { onMounted, onBeforeUnmount, watch } from 'vue'
+import { onMounted, onBeforeUnmount} from 'vue'
 import { useAnimeStore } from '@/store/modules/anime'
 import Tab from './tab/index.vue'
 import {
@@ -38,14 +38,12 @@ const { animeInfo, img_url, taskInfo } = storeToRefs(animeStore)
 let $route = useRoute()
 
 onMounted(() => {
-    console.log("(onMounted)获得动画与种子与任务信息")
     animeStore.setupWatchers();
     animeStore.getAnimeDetail(Number($route.query.mikan_id))
 })
 
 onBeforeUnmount(() => {
     if (taskInfo.value.filter((task) => task.qb_task_status === 0).length !== 0) {
-        console.log("(onBeforeUnmount)离开anime页面,发送stop信号,切断ws")
         animeStore.sendStopSignal();
     }
 })
