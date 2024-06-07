@@ -6,6 +6,10 @@ export interface Anime {
   mikan_id: number;
   subscribe_status: number;
   update_day: number;
+  bangumi_id: number;
+  bangumi_rank: string;
+  bangumi_summary: string;
+  website: string;
 }
 
 export type Animes = Anime[];

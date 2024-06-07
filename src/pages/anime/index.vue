@@ -12,6 +12,17 @@
                     <el-button type="primary" :icon="RefreshRight" circle @click="updateAnimeSeed" />
                     <el-button type="info" :icon="Delete" circle @click="deleteAnimeSeed" />
                 </div>
+                <div class="anime-info">
+                    <div class="anime-rank">
+                        bangumi评分:
+                        <a :href="`https://bgm.tv/subject/${animeInfo.bangumi_id}#;`">{{ animeInfo.bangumi_rank }}</a>
+                    </div>
+                    <div class="anime-site">
+                        官方网站:
+                        <a :href="`${animeInfo.website}`">{{ animeInfo.website }}</a>
+                    </div>
+                    <div class="anime-summary">{{ animeInfo.bangumi_summary }}</div>
+                </div>
             </div>
         </div>
         <div class="subgroup-tab">
@@ -22,7 +33,7 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { onMounted, onBeforeUnmount} from 'vue'
+import { onMounted, onBeforeUnmount } from 'vue'
 import { useAnimeStore } from '@/store/modules/anime'
 import Tab from './tab/index.vue'
 import {
@@ -69,6 +80,7 @@ async function deleteAnimeSeed() {
         display: flex;
         margin-top: 15px;
         margin-bottom: 15px;
+        height: 240px;
 
         .anime-left {
             margin-right: 20px;
@@ -81,7 +93,6 @@ async function deleteAnimeSeed() {
 
         .anime-right {
             width: 70%;
-            height: 100%;
 
             .anime-name {
                 font-size: 24px;
@@ -89,7 +100,7 @@ async function deleteAnimeSeed() {
             }
 
             .anime-button {
-                margin-bottom: 40px;
+                margin-bottom: 10px;
 
                 .is-subscribed {
                     background-color: red;
@@ -110,6 +121,27 @@ async function deleteAnimeSeed() {
                     background-color: red;
                     border-color: red;
                 }
+            }
+
+            .anime-info {
+                height: 164px;
+
+                .anime-rank {
+                    margin-bottom: 5px;
+                }
+
+                .anime-site {
+                    margin-bottom: 10px;
+                }
+
+                .anime-summary {
+                    border-top: 2px solid rgb(224, 224, 224);
+                    padding-top: 5px;
+                    width: 1200px;
+                    height: 100px;
+                }
+
+
             }
         }
     }

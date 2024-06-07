@@ -85,6 +85,7 @@ export const useAnimeStore = defineStore("anime", {
         let result = await reqUpdateAnimeSeed(this.reqAnimeData);
         if (result.status == 200) {
           loading.close();
+          await this.getAnime(this.reqAnimeData.mikan_id);
           await this.getSeed(this.reqAnimeData.mikan_id);
           await this.getSubgroup();
           await this.getTask(this.reqAnimeData.mikan_id);
