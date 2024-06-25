@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router';
 import { useCalendar } from '@/hooks/useCalendar';
 import { RefreshRight } from '@element-plus/icons-vue'
@@ -48,6 +48,15 @@ async function updateAnimeList() {
     }
     listStore.updateBroadcastList(item)
 }
+
+watch(
+    () => $route.path,
+    (newPath) => {
+        if (newPath !== '/list') {
+            value.value = [];
+        }
+    }
+);
 </script>
 
 <style scoped lang="scss">

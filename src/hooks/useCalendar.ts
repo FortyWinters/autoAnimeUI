@@ -43,12 +43,12 @@ export function useCalendar() {
 
       const seasonsToAdd =
         year === currentYear
-          ? seasons.slice(0, currentSeasonIndex + 1)
-          : seasons;
+          ? [...seasons.slice(0, currentSeasonIndex + 1)].reverse()
+          : [...seasons].reverse();
       const labelsToAdd =
         year === currentYear
-          ? seasonLabels.slice(0, currentSeasonIndex + 1)
-          : seasonLabels;
+          ? [...seasonLabels.slice(0, currentSeasonIndex + 1)].reverse()
+          : [...seasonLabels].reverse();
 
       for (let i = 0; i < seasonsToAdd.length; i++) {
         const seasonStructure: SeasonStructure = {
