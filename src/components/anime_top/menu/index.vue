@@ -24,6 +24,8 @@ const handleSelect = (key: string) => {
 
 <style scoped lang="scss">
 .menu {
+    margin-left: 10px;
+
     :deep(.el-menu-item) {
         padding-left: 17px;
         padding-right: 17px;

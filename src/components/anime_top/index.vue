@@ -7,6 +7,11 @@
         <div class="right">
             <Cascader />
             <Menu />
+            <div class="github">
+                <a href="https://github.com/FortyWinters/autoAnimeR">
+                    <img src="../../assets/images/github.png" alt="">
+                </a>
+            </div>
         </div>
     </div>
 </template>
@@ -49,6 +54,15 @@ function jumpToHome() {
         display: flex;
         justify-content: center;
         align-items: center;
+
+        .github {
+            margin-left: 15px;
+            margin-right: 2px;
+
+            img {
+                height: 32px;
+            }
+        }
     }
 }
 </style>
