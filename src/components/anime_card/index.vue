@@ -125,7 +125,6 @@ function jumpToAnime(mikan_id: number) {
                     .is-subscribed:hover {
                         background-color: rgb(249, 104, 104);
                         border-color: rgb(249, 104, 104);
-                        ;
                     }
 
                     .is-not-subscribed {

@@ -2,6 +2,7 @@
     <div class="top">
         <div class="left">
             <img src="../../assets/images/logo.png" alt="" @click="jumpToHome()">
+            <Search />
         </div>
         <div class="right">
             <Cascader />
@@ -13,6 +14,7 @@
 <script setup lang="ts">
 import Menu from './menu/index.vue'
 import Cascader from './cascader/index.vue'
+import Search from './search/index.vue'
 import { useRouter } from 'vue-router';
 
 const $router = useRouter()

@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { onMounted, onBeforeUnmount } from 'vue'
+import { onMounted, onBeforeUnmount, watch } from 'vue'
 import { useAnimeStore } from '@/store/modules/anime'
 import Tab from './tab/index.vue'
 import {
@@ -48,14 +48,24 @@ const { animeInfo, img_url, taskInfo } = storeToRefs(animeStore)
 
 let $route = useRoute()
 
+const fetchAnimeDetail = (mikan_id: number) => {
+    animeStore.getAnimeDetail(mikan_id)
+}
+
 onMounted(() => {
     animeStore.setupWatchers();
-    animeStore.getAnimeDetail(Number($route.query.mikan_id))
+    fetchAnimeDetail(Number($route.query.mikan_id))
 })
 
 onBeforeUnmount(() => {
     if (taskInfo.value.filter((task) => task.qb_task_status === 0).length !== 0) {
         animeStore.sendStopSignal();
+    }
+})
+
+watch(() => $route.query.mikan_id, (newMikanId) => {
+    if (newMikanId) {
+        fetchAnimeDetail(Number(newMikanId))
     }
 })
 
