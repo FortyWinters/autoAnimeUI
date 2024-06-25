@@ -30,7 +30,6 @@ const adjustSubtitleFontSize = () => {
                 if (videoWidth) {
                     const newFontSize = `${videoWidth * 0.04}px`;
                     subtitleElement.style.fontSize = newFontSize;
-                    console.log(newFontSize);
                 }
             }
         }
@@ -71,12 +70,11 @@ onMounted(() => {
 <style scoped lang="scss">
 .dplayer-container {
     width: 100%;
-    max-width: 800px;
     margin: auto;
 }
 
 #dplayer {
     width: 100%;
-    height: auto;
+    height: 100%;
 }
 </style>

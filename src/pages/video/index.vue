@@ -19,7 +19,7 @@
             <el-col :span="16">
                 <el-row :gutter="0">
                     <div class="grid-content ep-bg-purple">
-                        <Player :videoPath="videoPath" :subtitlePath="subtitlePath" :key="videoPath" class="player" />
+                        <Player :videoPath="videoPath" :subtitlePath="subtitlePath" :key="`${videoPath}-${subtitlePath}`" class="player" />
                     </div>
                 </el-row>
             </el-col>
@@ -47,7 +47,7 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { onMounted, ref, computed, watch, watchEffect } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import Tab from '../anime/tab/index.vue'
 import { useAnimeStore } from '@/store/modules/anime'
 import Player from './player/index.vue'
@@ -80,10 +80,8 @@ let videoPath = ref<string | undefined>(undefined);
 let subtitlePath = ref<string | undefined>(undefined);
 
 onMounted(() => {
-    animeStore.getAnime(Number($route.query.mikan_id))
-    animeStore.getSeed(Number($route.query.mikan_id))
-    animeStore.getSubgroup()
-    animeStore.getTask(Number($route.query.mikan_id))
+    animeStore.setupWatchers();
+    animeStore.getAnimeDetail(Number($route.query.mikan_id))
     doInit()
 })
 

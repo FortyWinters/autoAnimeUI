@@ -84,3 +84,16 @@ export interface ReqSubtitlePath {
 export interface ReqSubgroupId {
   id: number;
 }
+
+export interface qbConfig {
+  qb_url: string,
+  username: string,
+  password: string
+}
+export interface ReqCongfig {
+  deploy_mode: string,
+  download_path: string,
+  img_path: string,
+  ui_url: string,
+  qb_config: qbConfig
+}
