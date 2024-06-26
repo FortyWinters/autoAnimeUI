@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { onMounted, watch } from 'vue'
 import type { ReqAnimeBroadcast } from '@/types'
 import { useRoute } from 'vue-router';
 import { useListStore } from '@/store/modules/list'

@@ -37,7 +37,6 @@ function jumpToHome() {
     flex-wrap: wrap;
     display: flex;
     justify-content: space-between;
-    min-width: 970px;
 
     .left {
         display: flex;
