@@ -36,9 +36,10 @@ function jumpToHome() {
     width: 100%;
     flex-wrap: wrap;
     display: flex;
+    justify-content: space-between;
+    min-width: 970px;
 
     .left {
-        flex: 5 5 auto;
         display: flex;
         align-items: center;
         height: 45px;
@@ -50,14 +51,13 @@ function jumpToHome() {
 
     .right {
         height: 45px;
-        flex: 1 1 auto;
         display: flex;
         justify-content: center;
         align-items: center;
 
         .github {
             margin-left: 15px;
-            margin-right: 2px;
+            margin-right: 8px;
 
             img {
                 height: 32px;
