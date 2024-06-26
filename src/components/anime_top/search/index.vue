@@ -67,8 +67,8 @@ const fetchData = async (keyword: string, cb: (suggestions: any[]) => void) => {
 
 const handleSelect = (item: any) => {
   animeName.value = item.anime_name;
-  goAnime(item.mikan_id);
   centerDialogVisible.value = false;
+  goAnime(item.mikan_id);
 };
 
 const goAnime = (mikan_id: number) => {
