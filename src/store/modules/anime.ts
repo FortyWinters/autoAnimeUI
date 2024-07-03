@@ -100,9 +100,10 @@ export const useAnimeStore = defineStore("anime", {
         }
       } catch (error) {
         loading.close();
-        ElMessage.error({
-          message: error instanceof Error ? error.message : "种子更新失败",
-        });
+          ElMessage({
+            message: "种子更新失败",
+            type: "error",
+          });
       }
       return "ok";
     },
