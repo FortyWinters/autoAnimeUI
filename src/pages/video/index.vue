@@ -19,7 +19,8 @@
             <el-col :span="16">
                 <el-row :gutter="0">
                     <div class="grid-content ep-bg-purple">
-                        <Player :videoPath="videoPath" :subtitlePath="subtitlePath" :key="`${videoPath}-${subtitlePath}`" class="player" />
+                        <Player :videoPath="videoPath" :subtitlePath="subtitlePath"
+                            :key="`${videoPath}-${subtitlePath}`" class="player" />
                     </div>
                 </el-row>
             </el-col>
@@ -97,10 +98,7 @@ watch(
     [() => $route.query, anime_task, subtitle_path],
     ([query, newAnimeTask, newSubtitlePath], [oldQuery, oldAnimeTask, oldSubtitlePath]) => {
         if (query !== oldQuery) {
-            animeStore.getAnime(Number(query.mikan_id));
-            animeStore.getSeed(Number(query.mikan_id));
-            animeStore.getSubgroup();
-            animeStore.getTask(Number(query.mikan_id));
+            animeStore.getAnimeDetail(Number(query.mikan_id));
             doInit();
         }
 

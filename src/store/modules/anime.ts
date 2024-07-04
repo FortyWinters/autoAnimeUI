@@ -85,10 +85,7 @@ export const useAnimeStore = defineStore("anime", {
         let result = await reqUpdateAnimeSeed(this.reqAnimeData);
         if (result.status == 200) {
           loading.close();
-          await this.getAnime(this.reqAnimeData.mikan_id);
-          await this.getSeed(this.reqAnimeData.mikan_id);
-          await this.getSubgroup();
-          await this.getTask(this.reqAnimeData.mikan_id);
+          await this.getAnimeDetail(this.reqAnimeData.mikan_id);
           ElMessage({
             message: "种子更新成功",
             type: "success",
@@ -100,10 +97,10 @@ export const useAnimeStore = defineStore("anime", {
         }
       } catch (error) {
         loading.close();
-          ElMessage({
-            message: "种子更新失败",
-            type: "error",
-          });
+        ElMessage({
+          message: "种子更新失败",
+          type: "error",
+        });
       }
       return "ok";
     },
