@@ -34,6 +34,11 @@
         </el-row>
     </div>
 
+    <div class="re_gen_sub_button">
+    <div class="mb-4">
+        <el-button type="primary" plain @click="doReGenSubtilte">重新提取字幕</el-button>
+    </div>
+    </div>
     <div class="tab">
         <Tab />
     </div>
@@ -53,7 +58,7 @@ import Tab from '../anime/tab/index.vue'
 import { useAnimeStore } from '@/store/modules/anime'
 import Player from './player/index.vue'
 import { storeToRefs } from 'pinia'
-import { getAnimeTask, getSubtitlePath } from '@/api/video'
+import { getAnimeTask, getSubtitlePath, postReGenSubtitle } from '@/api/video'
 
 const $route = useRoute()
 const animeStore = useAnimeStore()
@@ -85,6 +90,10 @@ onMounted(() => {
     animeStore.getAnimeDetail(Number($route.query.mikan_id))
     doInit()
 })
+
+const doReGenSubtilte = async () => {
+    await postReGenSubtitle({ torrent_name: String($route.query.torrent_name) })
+}
 
 const doInit = async () => {
     let anime_res = await getAnimeTask({ torrent_name: String($route.query.torrent_name) })
@@ -192,5 +201,13 @@ watch(
     white-space: nowrap;
 
     color: rgb(100, 100, 100);
+}
+
+.re_gen_sub_button {
+    display: flex;
+    justify-content: right;
+    margin-top: 30px;
+    width: 100%;
+    overflow: hidden;
 }
 </style>@/store/modules/anime
