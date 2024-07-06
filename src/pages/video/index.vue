@@ -58,29 +58,23 @@ import Tab from '../anime/tab/index.vue'
 import { useAnimeStore } from '@/store/modules/anime'
 import Player from './player/index.vue'
 import { storeToRefs } from 'pinia'
-import { getAnimeTask, getSubtitlePath, postReGenSubtitle } from '@/api/video'
+import { getVideoDetail, postReGenSubtitle } from '@/api/video'
 
 const $route = useRoute()
 const animeStore = useAnimeStore()
 const { animeInfo, animeSubgroupInfo } = storeToRefs(animeStore)
 
-interface AnimeTask {
-    filename: string;
-    id: number;
-    mikan_id: number;
-    qb_task_status: number;
-    rename_status: number;
-    torrent_name: string;
-}
-
-interface SubtitlePath {
-    subtitle: string
+interface VideoDetail {
+    anime_name: string;
+    subgroup_name: string;
+    video_path: string;
+    subtitle_vec: string[];
 }
 
 const baseUrl = "/file_server"
 
-let anime_task = ref<AnimeTask>();
-let subtitle_path = ref<SubtitlePath>();
+let video_detail = ref<VideoDetail>();
+let subtitle_path = ref<string | undefined>(undefined)
 let subgroup_name = ref<string | undefined>(undefined);
 let videoPath = ref<string | undefined>(undefined);
 let subtitlePath = ref<string | undefined>(undefined);
@@ -96,25 +90,22 @@ const doReGenSubtilte = async () => {
 }
 
 const doInit = async () => {
-    let anime_res = await getAnimeTask({ torrent_name: String($route.query.torrent_name) })
-    anime_task.value = anime_res.data
-
-    let res = await getSubtitlePath({ video_name: String(anime_task.value?.filename) })
-    subtitle_path.value = res.data
+    let video_res = await getVideoDetail({ torrent_name: String($route.query.torrent_name) })
+    video_detail.value = video_res.data
 }
 
 watch(
-    [() => $route.query, anime_task, subtitle_path],
-    ([query, newAnimeTask, newSubtitlePath], [oldQuery, oldAnimeTask, oldSubtitlePath]) => {
+    [() => $route.query, video_detail],
+    ([query, newVideoDetail], [oldQuery, oldVideoDetail]) => {
         if (query !== oldQuery) {
             animeStore.getAnimeDetail(Number(query.mikan_id));
             doInit();
         }
 
-        else if (newAnimeTask !== undefined && newSubtitlePath !== undefined) {
-            subgroup_name.value = animeSubgroupInfo.value.find(subgroup => subgroup.subgroup_id === Number(query.subgroup_id))?.subgroup_name;
-            videoPath.value = baseUrl + '/' + animeInfo.value.anime_name + "(" + query.mikan_id + ")" + '/' + newAnimeTask?.filename;
-            subtitlePath.value = baseUrl + '/' + animeInfo.value.anime_name + "(" + query.mikan_id + ")" + '/' + newSubtitlePath;
+        else if (newVideoDetail !== undefined) {
+            subgroup_name.value = newVideoDetail?.anime_name;
+            videoPath.value = baseUrl + '/' + newVideoDetail?.video_path
+            subtitlePath.value = baseUrl + '/' + newVideoDetail?.subtitle_vec[0];
         }
     }
 );
