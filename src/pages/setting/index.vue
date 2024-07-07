@@ -107,6 +107,13 @@ const isDockerDeployment = computed(() => form.deploy_mode === 'docker');
 const doGetTaskStatus = async() => {
     let res = await autoModeStatus();
     Status.value = res.data;
+    
+    if (res.data == "Task is Running") {
+        TaskStatus.value = true;
+    } else {
+        TaskStatus.value = false;
+    }
+    
 }
 
 const doGetConfig = async() => {
