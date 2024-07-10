@@ -34,10 +34,10 @@
         </el-row>
     </div>
 
-    <div class="re_gen_sub_button">
-    <div class="mb-4">
-        <el-button type="primary" plain @click="doReGenSubtilte">重新提取字幕</el-button>
-    </div>
+    <div class="video-setting">
+        <div class="mb-4">
+            <el-button type="primary" plain @click="doReGenSubtilte">重新提取字幕</el-button>
+        </div>
     </div>
     <div class="tab">
         <Tab />
@@ -74,25 +74,24 @@ interface VideoDetail {
 const baseUrl = "/file_server"
 
 let video_detail = ref<VideoDetail>();
-let subtitle_path = ref<string | undefined>(undefined)
 let subgroup_name = ref<string | undefined>(undefined);
 let videoPath = ref<string | undefined>(undefined);
 let subtitlePath = ref<string | undefined>(undefined);
-
-onMounted(() => {
-    animeStore.setupWatchers();
-    animeStore.getAnimeDetail(Number($route.query.mikan_id))
-    doInit()
-})
 
 const doReGenSubtilte = async () => {
     await postReGenSubtitle({ torrent_name: String($route.query.torrent_name) })
 }
 
 const doInit = async () => {
-    let video_res = await getVideoDetail({ torrent_name: String($route.query.torrent_name) })
+    let video_res = await getVideoDetail({ torrent_name: String($route.query.torrent_name) });
     video_detail.value = video_res.data
 }
+
+onMounted(() => {
+    animeStore.setupWatchers();
+    animeStore.getAnimeDetail(Number($route.query.mikan_id))
+    doInit()
+})
 
 watch(
     [() => $route.query, video_detail],
@@ -109,7 +108,6 @@ watch(
         }
     }
 );
-
 
 </script>
 
@@ -194,7 +192,7 @@ watch(
     color: rgb(100, 100, 100);
 }
 
-.re_gen_sub_button {
+.video-setting {
     display: flex;
     justify-content: right;
     margin-top: 30px;

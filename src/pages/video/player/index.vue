@@ -5,20 +5,23 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, onBeforeUnmount, onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router'
+import { defineProps, onBeforeUnmount, onMounted, ref, onUnmounted } from 'vue';
 import DPlayer from 'dplayer';
+import { setVideoProgress, getVideoProgress } from '@/api/video'
+
+const $route = useRoute()
 
 const props = defineProps({
     videoPath: String,
     subtitlePath: String,
 });
 
-const videoPath = String(props.videoPath)
+const videoPath = String(props.videoPath);
 const subtitlePath = String(props.subtitlePath)
-
-
 const dplayerContainer = ref<HTMLElement | null>(null);
 const dp = ref<DPlayer | null>(null);
+const TorrentName = String($route.query.torrent_name);
 
 const adjustSubtitleFontSize = () => {
     if (dp.value && dp.value.video) {
@@ -36,30 +39,66 @@ const adjustSubtitleFontSize = () => {
     }
 };
 
-const initializeDPlayer = () => {
+interface ReqVideoProgress {
+    progress_id: string,
+    torrent_name: string,
+    progress_status: number
+}
+
+const doGetVideoProgress = async () => {
+    const videoProgress: ReqVideoProgress = {
+        progress_id: "Default",
+        torrent_name: TorrentName,
+        progress_status: -1,
+    };
+    return await getVideoProgress(videoProgress);
+}
+
+const doSetVideoProgress = async () => {
+    const progress = dp.value?.video.currentTime;
+    if (progress !== undefined) {
+        const integerProgress = Math.floor(progress);
+        console.log(integerProgress);
+
+        const videoProgress: ReqVideoProgress = {
+            progress_id: "Default",
+            torrent_name: TorrentName,
+            progress_status: integerProgress,
+        };
+
+        // console.log("set time: ", videoProgress);
+        await setVideoProgress(videoProgress);
+    }
+}
+
+const initializeDPlayer = async () => {
     dp.value = new DPlayer({
         container: document.getElementById('dplayer'),
         screenshot: true,
+        autoplay: true,
         video: {
             url: videoPath,
         },
         subtitle: {
             url: subtitlePath,
-            fontSize: '30px', // Initial font size
+            fontSize: '30px',
         },
     });
+
+    const videoProgress = await doGetVideoProgress();
+    if (videoProgress.data > 0) {
+        dp.value?.seek(videoProgress.data);
+    }
 };
 
 onMounted(() => {
     initializeDPlayer();
-
     if (dplayerContainer.value) {
-        // Utilize ResizeObserver to monitor container size changes
         const resizeObserver = new ResizeObserver(adjustSubtitleFontSize);
         resizeObserver.observe(dplayerContainer.value);
 
-        // Disconnect the observer when the component is unmounted
         onBeforeUnmount(() => {
+            doSetVideoProgress();
             resizeObserver.disconnect();
         });
     }

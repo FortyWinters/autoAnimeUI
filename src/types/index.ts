@@ -97,3 +97,9 @@ export interface ReqCongfig {
   ui_url: string,
   qb_config: qbConfig
 }
+
+export interface ReqVideoProgress {
+  progress_id: string,
+  torrent_name: string,
+  progress_status: number
+}
