@@ -70,11 +70,9 @@
 <script setup lang="ts">
 import { ref, onMounted, reactive, computed } from 'vue'
 import { autoModeOn, autoModeOff, reloadTask, autoModeStatus, modifyConfig, getConfig } from '@/api/setting'
-import type { AxiosResponse } from 'axios'
 import { Check, Close } from '@element-plus/icons-vue'
 
 const Status = ref('')
-
 const TaskStatus = ref(false)
 
 const form = reactive({
@@ -159,7 +157,7 @@ onMounted(async () => {
 <style scoped lang="scss">
 .h {
     .h-inner {
-        background-image: url("src/assets/images/bilibili.webp");
+        background-image: url(http://127.0.0.1:9999/images/bilibili.webp);
         background-size: contain;
         background-position: center;
         background-repeat: no-repeat;

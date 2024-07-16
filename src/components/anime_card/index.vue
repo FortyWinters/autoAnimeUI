@@ -3,7 +3,7 @@
         <div class="anime-card-container" :style="{ width: animeCardContainerWidth + 'px' }">
             <el-card v-for="a in animeList" :key="a.mikan_id" class="anime-card" shadow="hover">
                 <div class="card-top" @click="jumpToAnime(a.mikan_id)">
-                    <el-image :src="`src/assets/images/anime_list/${a.img_url}`" style="width: 180px; height: 240px;" />
+                    <el-image :src="fileServer + `/images/anime_list/${a.img_url}`" style="width: 180px; height: 240px;" />
                 </div>
                 <div class="card-bottom">
                     <div class="card-left">
@@ -34,6 +34,7 @@ import { Star } from '@element-plus/icons-vue';
 
 const listStore = useListStore();
 const { animeList } = storeToRefs(listStore);
+const fileServer = ref(import.meta.env.VITE_APT_FILE_SERVER_URL);
 
 const $router = useRouter();
 const $route = useRoute();
