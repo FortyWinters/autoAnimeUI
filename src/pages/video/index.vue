@@ -19,7 +19,7 @@
             <el-col :span="16">
                 <el-row :gutter="0">
                     <div class="grid-content ep-bg-purple">
-                        <Player :videoPath="videoPath" :subtitlePath="subtitlePath"
+                        <Player v-if="videoPath !== undefined" :videoPath="videoPath" :subtitlePath="subtitlePath"
                             :key="`${videoPath}-${subtitlePath}`" class="player" />
                     </div>
                 </el-row>

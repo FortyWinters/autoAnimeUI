@@ -58,7 +58,6 @@ const doSetVideoProgress = async () => {
     const progress = dp.value?.video.currentTime;
     if (progress !== undefined) {
         const integerProgress = Math.floor(progress);
-        console.log(integerProgress);
 
         const videoProgress: ReqVideoProgress = {
             progress_id: "Default",
@@ -72,18 +71,21 @@ const doSetVideoProgress = async () => {
 }
 
 const initializeDPlayer = async () => {
-    dp.value = new DPlayer({
+    const playerOptions = {
         container: document.getElementById('dplayer'),
         screenshot: true,
         autoplay: true,
         video: {
             url: videoPath,
         },
-        subtitle: {
-            url: subtitlePath,
-            fontSize: '30px',
-        },
-    });
+        ...(subtitlePath !== "/file_server/undefined" && {
+            subtitle: {
+                url: subtitlePath,
+                fontSize: '30px',
+            }
+        }),
+    };
+    dp.value = new DPlayer(playerOptions);
 
     const videoProgress = await doGetVideoProgress();
     if (videoProgress.data > 0) {
