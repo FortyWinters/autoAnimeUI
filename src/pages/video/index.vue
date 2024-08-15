@@ -35,20 +35,45 @@
     </div>
 
     <div class="video-setting">
-        <div class="mb-4">
-            <el-button type="primary" plain @click="doReGenSubtilte">重新提取字幕</el-button>
+        <div class="video-setting-button">
+            <div class="mb-4">
+                <el-button type="primary" plain @click="doReGenSubtilte">重新提取字幕</el-button>
+                <el-button type="primary" plain @click="doCheckHwAccels">转换视频格式</el-button>
+            </div>
+
+            <el-dialog v-model="notSupportHwAccels" width="500">
+                <span> 当前设备不支持硬件加速解码, 是否使用CPU进行软件解码?</span>
+                <template #footer>
+                    <div class="dialog-footer">
+                        <el-button @click="notSupportHwAccels = false">取消</el-button>
+                        <el-button type="primary" @click="doTransVideoFormat"> 确认 </el-button>
+                    </div>
+                </template>
+            </el-dialog>
+
+            <el-dialog v-model="SupportHwAccels" width="500">
+                <span> 当前设备支持 "{{ codecName }}" 硬件解码, autoAnime 将使用硬件加速视频解码, 是否继续？</span>
+                <template #footer>
+                    <div class="dialog-footer">
+                        <el-button @click="SupportHwAccels = false">取消</el-button>
+                        <el-button type="primary" @click="doTransVideoFormat"> 确认 </el-button>
+                    </div>
+                </template>
+            </el-dialog>
+
         </div>
     </div>
+
     <div class="tab">
         <Tab />
     </div>
 
     <div class="bottom">
-        <span class="text">BanG(umi) Dream! It's My AutoAnime ! ! ! ! ! ✌️🥵✌️</span>
-        <!-- <span style="font-size: 25px;"> ✌️🥵✌️</span> -->
+        <div class="bottom-right">
+            <span class="text">BanG(umi) Dream! It's My AutoAnime ! ! ! ! ! </span>
+            <span class="emoji">✌️🥵✌️</span>
+        </div>
     </div>
-
-
 </template>
 
 <script setup lang="ts">
@@ -58,7 +83,7 @@ import Tab from '../anime/tab/index.vue'
 import { useAnimeStore } from '@/store/modules/anime'
 import Player from './player/index.vue'
 import { storeToRefs } from 'pinia'
-import { getVideoDetail, postReGenSubtitle } from '@/api/video'
+import { getVideoDetail, postReGenSubtitle, checkHwAccels, transVideoFormat } from '@/api/video'
 
 const $route = useRoute()
 const animeStore = useAnimeStore()
@@ -72,6 +97,9 @@ interface VideoDetail {
 }
 
 const baseUrl = "/file_server"
+const notSupportHwAccels = ref(false)
+const SupportHwAccels = ref(false)
+const codecName = ref("")
 
 let video_detail = ref<VideoDetail>();
 let subgroup_name = ref<string | undefined>(undefined);
@@ -80,6 +108,30 @@ let subtitlePath = ref<string | undefined>(undefined);
 
 const doReGenSubtilte = async () => {
     await postReGenSubtitle({ torrent_name: String($route.query.torrent_name) })
+}
+
+const doCheckHwAccels = async () => {
+    try {
+        let res = await checkHwAccels()
+        if (res.data === "") {
+            notSupportHwAccels.value = true;
+        } else {
+            codecName.value = res.data;
+            SupportHwAccels.value = true;
+        }
+    } catch (error) {
+        console.error("An error occurred during the transcoding process:", error);
+    }
+}
+
+const doTransVideoFormat = async () => {
+    try {
+        notSupportHwAccels.value = false;
+        SupportHwAccels.value = false;
+        await transVideoFormat({ torrent_name: String($route.query.torrent_name) })
+    } catch (error) {
+        console.error("An error occurred during the transcoding process:", error);
+    }
 }
 
 const doInit = async () => {
@@ -168,6 +220,16 @@ watch(
     transform: scaleX(-1);
 }
 
+.video-setting {
+    .video-setting-button {
+        display: flex;
+        margin-top: 30px;
+        width: 100%;
+        overflow: hidden;
+        margin-left: 70%;
+    }
+}
+
 .tab {
     margin-top: 20px;
     margin-bottom: 15px;
@@ -175,28 +237,27 @@ watch(
 }
 
 .bottom {
-    display: flex;
-    justify-content: left;
-    margin-top: 30px;
-    width: 100%;
-    overflow: hidden;
-}
+    .bottom-right {
+        display: flex;
+        margin-top: 30px;
+        width: 100%;
+        overflow: hidden;
+        margin-left: 70%;
 
-.text {
-    font-family: Serif;
-    font-weight: 100;
-    font-size: 20px;
-    font-style: italic;
-    white-space: nowrap;
+        .text {
+            font-family: Serif;
+            font-weight: 100;
+            font-size: 20px;
+            font-style: italic;
+            white-space: nowrap;
 
-    color: rgb(100, 100, 100);
-}
+            color: rgb(100, 100, 100);
+        }
 
-.video-setting {
-    display: flex;
-    justify-content: right;
-    margin-top: 30px;
-    width: 100%;
-    overflow: hidden;
+        .emoji {
+            font-size: 20px;
+        }
+    }
+
 }
 </style>@/store/modules/anime
