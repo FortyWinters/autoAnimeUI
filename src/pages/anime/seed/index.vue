@@ -2,7 +2,8 @@
     <div class="seed-container">
         <el-dropdown v-for="s in seedArr" :key="s.seed_url">
             <div class="episode-container">
-                <div :class="episodeClass(s.seed_status)">
+                <div :class="episodeClass(s.seed_status)" class="button-with-badge">
+                    <span v-if="s.is_new === 1" class="notification-badge">New</span>
                     <span v-if="s.seed_status !== 2" style="font-size: 13px; margin: 10px 10px;" :title="s.seed_name">
                         {{ s.episode === -1 ? '合 集' : `第 ${s.episode} 集` }}
                     </span>
@@ -97,7 +98,7 @@ function episodeClass(seed_status: number): string {
 }
 
 .episode-container {
-    height: 30px;
+    height: 35px;
     width: 90px;
     display: flex;
     justify-content: center;
@@ -147,6 +148,29 @@ function episodeClass(seed_status: number): string {
 
         span {
             color: #ffffff;
+        }
+    }
+
+    .button-with-badge {
+        position: relative;
+        // padding: 10px 20px;
+        font-size: 1rem;
+        margin-top: 5%;
+        .notification-badge {
+            position: absolute;
+            top: 10;
+            right: 6%;
+            transform: translate(50%, -50%);
+            background-color: red;
+            color: white;
+            padding: 4px;
+            border-radius: 70%;
+            font-size: 0.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            min-height: 20px;
         }
     }
 }

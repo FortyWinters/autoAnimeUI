@@ -326,7 +326,7 @@ export const useAnimeStore = defineStore("anime", {
               updatedSeedStatus = 3; // downloaded
               break;
           }
-          seed = { ...seed, seed_status: updatedSeedStatus };
+          seed = { ...seed, seed_status: updatedSeedStatus, is_new: correspondingTask.is_new};
         }
 
         const correspondingQbTask = state.qbTaskInfo.find((qbTask) =>

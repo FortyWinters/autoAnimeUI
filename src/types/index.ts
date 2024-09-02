@@ -33,6 +33,7 @@ export interface Seed {
   seed_status: number;
   seed_size: string;
   progress?: number;
+  is_new?: number;
 }
 // 0: unused
 // 1: used
@@ -51,6 +52,7 @@ export interface Task {
   episode: number;
   torrent_name: string;
   qb_task_status: number;
+  is_new: number;
 }
 // 0: downloading
 // 1: done

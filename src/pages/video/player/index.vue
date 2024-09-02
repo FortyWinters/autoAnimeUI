@@ -8,7 +8,7 @@
 import { useRoute } from 'vue-router'
 import { defineProps, onBeforeUnmount, onMounted, ref, onUnmounted } from 'vue';
 import DPlayer from 'dplayer';
-import { setVideoProgress, getVideoProgress } from '@/api/video'
+import { setVideoProgress, getVideoProgress, updateSeenStatus } from '@/api/video'
 
 const $route = useRoute()
 
@@ -68,6 +68,10 @@ const doSetVideoProgress = async () => {
         // console.log("set time: ", videoProgress);
         await setVideoProgress(videoProgress);
     }
+}
+
+const doUpdateSeenStatus = async() => {
+    await updateSeenStatus({ torrent_name: String($route.query.torrent_name) });
 }
 
 const initializeDPlayer = async () => {

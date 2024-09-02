@@ -8,6 +8,7 @@ enum API {
   SET_VIDEO_PROGRESS_URL = "/video/set_anime_progress",
   CHECK_HW_ACCELS_URL = "/video/check_hw_accels",
   TRANS_VIDEO_FORMAT_URL = "/video/trans_video_format",
+  UPDATE_SEEN_STATUS = "/video/seen",
 }
 
 export const getVideoDetail = (torrent_name: ReqAnimeTask) => request.post(API.GET_VIDEO_DETAIL, torrent_name);
@@ -16,3 +17,4 @@ export const setVideoProgress = (req_video_progress: ReqVideoProgress) => reques
 export const getVideoProgress = (req_video_progress: ReqVideoProgress) => request.post(API.GET_VIDEO_PROGRESS_URL, req_video_progress);
 export const checkHwAccels = () => request.get(API.CHECK_HW_ACCELS_URL);
 export const transVideoFormat = (torrent_name: ReqAnimeTask) => request.post(API.TRANS_VIDEO_FORMAT_URL, torrent_name);
+export const updateSeenStatus = (torrent_name: ReqAnimeTask) => request.post(API.UPDATE_SEEN_STATUS, torrent_name);
