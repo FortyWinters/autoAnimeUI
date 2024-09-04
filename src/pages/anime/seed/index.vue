@@ -16,7 +16,8 @@
                 <el-dropdown-menu>
                     <el-dropdown-item command="download" @click="downloadAnimeSeed(s)"
                         :disabled="s.seed_status !== 0 && s.seed_status !== 1">下载</el-dropdown-item>
-                    <el-dropdown-item command="play" @click="jumpToVideo(s.mikan_id, s.episode, s.subgroup_id, s.seed_url)"
+                    <el-dropdown-item command="play"
+                        @click="jumpToVideo(s.mikan_id, s.episode, s.subgroup_id, s.seed_url)"
                         :disabled="s.seed_status !== 3"> 网页播放
                     </el-dropdown-item>
                     <el-dropdown-item command="delete" divided @click="deleteAnimeTask(s)"
@@ -156,6 +157,7 @@ function episodeClass(seed_status: number): string {
         // padding: 10px 20px;
         font-size: 1rem;
         margin-top: 5%;
+
         .notification-badge {
             position: absolute;
             top: 10;
@@ -166,11 +168,26 @@ function episodeClass(seed_status: number): string {
             padding: 4px;
             border-radius: 70%;
             font-size: 0.6rem;
+            font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
             min-width: 20px;
             min-height: 20px;
+            animation: flashAndBounce 2s infinite;
+        }
+
+        @keyframes flashAndBounce {
+            
+            100% {
+                opacity: 1;
+                transform: translateY(50%, -50%);
+            }
+
+            50% {
+                opacity: 0;
+                transform: translateY(50%, -50%);
+            }
         }
     }
 }

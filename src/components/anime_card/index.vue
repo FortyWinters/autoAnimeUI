@@ -3,7 +3,9 @@
         <div class="anime-card-container" :style="{ width: animeCardContainerWidth + 'px' }">
             <el-card v-for="a in animeList" :key="a.mikan_id" class="anime-card" shadow="hover">
                 <div class="card-top" @click="jumpToAnime(a.mikan_id)">
-                    <el-image :src="fileServer + `/images/anime_list/${a.img_url}`" style="width: 180px; height: 240px;" />
+                    <el-image :src="fileServer + `/images/anime_list/${a.img_url}`"
+                        style="width: 180px; height: 240px;" />
+                    <span v-if="a.new_finished_episode > 0" class="new-label">New</span>
                 </div>
                 <div class="card-bottom">
                     <div class="card-left">
@@ -116,8 +118,37 @@ function jumpToAnime(mikan_id: number) {
                 padding: 0px;
 
                 .card-top {
+                    position: relative;
                     width: 100%;
                     height: 240px;
+
+                    .new-label {
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        background-color: red;
+                        color: white;
+                        padding: 4px;
+                        border-radius: 70%;
+                        font-size: 0.8rem;
+                        //font-weight: bold;
+                        z-index: 10;
+                        animation: flashAndBounce 2s infinite;
+                    }
+
+                    @keyframes flashAndBounce {
+
+                        0%,
+                        100% {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+
+                        50% {
+                            opacity: 0;
+                            transform: translateY(-0px);
+                        }
+                    }
                 }
 
                 .card-bottom {

@@ -10,6 +10,7 @@ export interface Anime {
   bangumi_rank: string;
   bangumi_summary: string;
   website: string;
+  new_finished_episode: number;
 }
 
 export type Animes = Anime[];
