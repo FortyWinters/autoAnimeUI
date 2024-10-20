@@ -224,7 +224,6 @@ watch(
     .video-setting-button {
         display: flex;
         margin-top: 30px;
-        width: 100%;
         overflow: hidden;
         margin-left: 70%;
     }
@@ -240,7 +239,6 @@ watch(
     .bottom-right {
         display: flex;
         margin-top: 30px;
-        width: 100%;
         overflow: hidden;
         margin-left: 70%;
 

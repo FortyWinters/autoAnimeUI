@@ -1,6 +1,7 @@
 <template>
     <div ref="dplayerContainer" class="dplayer-container">
         <div id="dplayer"></div>
+        <button @click="enterPictureInPicture" class="pip-button">画中画</button>
     </div>
 </template>
 
@@ -70,7 +71,7 @@ const doSetVideoProgress = async () => {
     }
 }
 
-const doUpdateSeenStatus = async() => {
+const doUpdateSeenStatus = async () => {
     await updateSeenStatus({ torrent_name: String($route.query.torrent_name) });
 }
 
@@ -94,6 +95,21 @@ const initializeDPlayer = async () => {
     const videoProgress = await doGetVideoProgress();
     if (videoProgress.data > 0) {
         dp.value?.seek(videoProgress.data);
+    }
+};
+
+const enterPictureInPicture = () => {
+    const videoElement = dp.value?.video;
+    if (videoElement && videoElement.requestPictureInPicture) {
+        videoElement.requestPictureInPicture()
+            .then(() => {
+                console.log("Entered Picture-in-Picture mode");
+            })
+            .catch(error => {
+                console.error("Failed to enter Picture-in-Picture mode:", error);
+            });
+    } else {
+        console.warn("Picture-in-Picture is not supported");
     }
 };
 
@@ -121,5 +137,16 @@ onMounted(() => {
 #dplayer {
     width: 100%;
     height: 100%;
+}
+
+.pip-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
 }
 </style>
