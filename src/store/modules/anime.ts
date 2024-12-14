@@ -195,8 +195,9 @@ export const useAnimeStore = defineStore("anime", {
     },
     connectWs() {
       if (this.ws == null && !this.isConnected) {
-        this.ws = new WebSocket("ws://127.0.0.1:8080/v2/ws/");
-
+        const baseURL = import.meta.env.VITE_API_BASE_URL;
+        const wsURL = baseURL.replace(/^http/, "ws") + "/v2/ws/";
+        this.ws = new WebSocket(wsURL);
         this.ws.onopen = () => {
           this.isConnected = true;
           this.getTaskProgress(
