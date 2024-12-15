@@ -15,14 +15,26 @@ export interface Anime {
 
 export type Animes = Anime[];
 
-export interface ReqSubscribeAnime {
+export interface AnimeSubscribeReqJson {
   mikan_id: number;
   subscribe_status: number;
 }
 
-export interface ReqAnimeBroadcast {
+export interface AnimeDetailReqJson {
+  mikan_id: number;
+}
+
+export interface AnimeMikanIdReqJson {
+  mikan_id: number;
+}
+
+export interface AnimeBroadcastReqJson {
   year: number;
   season: number;
+}
+
+export interface AnimeKeyWordReqJson {
+  key: string;
 }
 
 export interface Seed {
@@ -58,10 +70,6 @@ export interface Task {
 // 0: downloading
 // 1: done
 export type Tasks = Task[];
-
-export interface ReqAnime {
-  mikan_id: number;
-}
 
 export interface AnimeDetail {
   anime_info: Anime;

@@ -1,4 +1,5 @@
 import request from "@/utils/request";
+import type { AnimeKeyWordReqJson } from "@/types";
 
 enum API {
   GET_ANIME_HOME_URL = "/anime/home",
@@ -6,5 +7,5 @@ enum API {
 }
 
 export const reqAnimeHome = () => request.get(API.GET_ANIME_HOME_URL);
-export const reqSearchAnime = (keyword: string) =>
-  request.get(`${API.SEARCH_ANIME_URL}/${keyword}`);
+export const reqSearchAnime = (data: AnimeKeyWordReqJson) =>
+  request.post(API.SEARCH_ANIME_URL, data);

@@ -32,6 +32,7 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import { reqSearchAnime } from "@/api/home";
+import type { AnimeKeyWordReqJson } from "@/types";
 
 const centerDialogVisible = ref(false);
 const autocompleteRef = ref(null);
@@ -47,7 +48,8 @@ const handleKeydown = (event: KeyboardEvent) => {
 
 const fetchData = async (keyword: string, cb: (suggestions: any[]) => void) => {
   try {
-    let result = await reqSearchAnime(keyword);
+    let data: AnimeKeyWordReqJson = { key: keyword };
+    let result = await reqSearchAnime(data);
     if (result.status === 200) {
       if (result.data.length === 0) {
         cb([]);

@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { reqAnimeHome } from "@/api/home";
 import { reqAnimeBroadcast, reqUpdateAnimeBroadcast } from "@/api/list";
-import type { Animes, ReqAnimeBroadcast } from "@/types";
+import type { Animes, AnimeBroadcastReqJson } from "@/types";
 import { ElMessage, ElLoading } from "element-plus";
 
 export const useListStore = defineStore("list", {
@@ -19,7 +19,7 @@ export const useListStore = defineStore("list", {
         return Promise.reject(new Error(result.data));
       }
     },
-    async getBroadcastList(item: ReqAnimeBroadcast) {
+    async getBroadcastList(item: AnimeBroadcastReqJson) {
       let result = await reqAnimeBroadcast(item);
       if (result.status == 200) {
         this.animeList = result.data;
@@ -28,7 +28,7 @@ export const useListStore = defineStore("list", {
         return Promise.reject(new Error(result.data));
       }
     },
-    async updateBroadcastList(item: ReqAnimeBroadcast) {
+    async updateBroadcastList(item: AnimeBroadcastReqJson) {
       const loading = ElLoading.service({
         lock: true,
         text: "正在更新...",

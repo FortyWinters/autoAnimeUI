@@ -28,7 +28,7 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { reqSubscribeAnime } from '@/api/anime';
-import type { ReqAnimeBroadcast, ReqSubscribeAnime } from '@/types';
+import type { AnimeBroadcastReqJson, AnimeSubscribeReqJson } from '@/types';
 import { ElMessage } from 'element-plus';
 import { useListStore } from '@/store/modules/list';
 import { storeToRefs } from 'pinia';
@@ -62,7 +62,7 @@ onBeforeUnmount(() => {
 });
 
 async function updateAnimeSubscribeStatus(mikan_id: number, subscribe_status: number) {
-    let item: ReqSubscribeAnime = {
+    let item: AnimeSubscribeReqJson = {
         mikan_id: mikan_id,
         subscribe_status: subscribe_status
     }
@@ -76,7 +76,7 @@ async function updateAnimeSubscribeStatus(mikan_id: number, subscribe_status: nu
         if ($route.path == '/home') {
             listStore.getHomeList();
         } else {
-            let broadcastItem: ReqAnimeBroadcast = {
+            let broadcastItem: AnimeBroadcastReqJson = {
                 year: Number($route.query.year),
                 season: Number($route.query.season),
             }

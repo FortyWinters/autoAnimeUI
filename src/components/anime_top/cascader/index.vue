@@ -14,7 +14,7 @@ import { ref, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router';
 import { useCalendar } from '@/hooks/useCalendar';
 import { RefreshRight } from '@element-plus/icons-vue'
-import type { ReqAnimeBroadcast } from '@/types'
+import type { AnimeBroadcastReqJson } from '@/types'
 import { useListStore } from '@/store/modules/list'
 
 let listStore = useListStore()
@@ -42,7 +42,7 @@ const handleChange = (value: string[]) => {
 }
 
 async function updateAnimeList() {
-    let item: ReqAnimeBroadcast = {
+    let item: AnimeBroadcastReqJson = {
         year: Number($route.query.year),
         season: Number($route.query.season),
     }

@@ -1,5 +1,10 @@
 import request from "@/utils/request";
-import type { ReqSubscribeAnime, ReqAnime, Seed } from "@/types";
+import type {
+  Seed,
+  AnimeDetailReqJson,
+  AnimeMikanIdReqJson,
+  AnimeSubscribeReqJson,
+} from "@/types";
 
 enum API {
   GET_ANIME_INFO_URL = "/anime/info",
@@ -15,23 +20,21 @@ enum API {
   UPDATE_TASK_URL = "/anime/task/update",
 }
 
-export const reqAnimeInfo = (mikan_id: number) =>
-  request.get(`${API.GET_ANIME_INFO_URL}/${mikan_id}`);
-export const reqSubscribeAnime = (data: ReqSubscribeAnime) =>
+export const reqSubscribeAnime = (data: AnimeSubscribeReqJson) =>
   request.post(API.SUBSCRIBE_ANIME_URL, data);
-export const reqSeedInfo = (mikan_id: number) =>
-  request.get(`${API.GET_SEED_INFO_URL}/${mikan_id}`);
+export const reqSeedInfo = (data: AnimeMikanIdReqJson) =>
+  request.post(API.GET_SEED_INFO_URL, data);
 export const reqSubgroupInfo = () => request.get(API.GET_SUBGROUP_INFO_URL);
-export const reqTaskInfo = (mikan_id: number) =>
-  request.get(`${API.GET_TASK_INFO_URL}/${mikan_id}`);
-export const reqUpdateAnimeSeed = (data: ReqAnime) =>
+export const reqTaskInfo = (data: AnimeMikanIdReqJson) =>
+  request.post(API.GET_TASK_INFO_URL, data);
+export const reqUpdateAnimeSeed = (data: AnimeMikanIdReqJson) =>
   request.post(API.UPDATE_ANIME_SEED_URL, data);
-export const reqDeleteAnimeSeed = (data: ReqAnime) =>
+export const reqDeleteAnimeSeed = (data: AnimeMikanIdReqJson) =>
   request.post(API.DELETE_ANIME_SEED_URL, data);
 export const reqDownloadAnimeSeed = (data: Seed) =>
   request.post(API.DOWNLOAD_ANIME_SEED_URL, data);
-export const reqAnimeDetail = (mikan_id: number) =>
-  request.get(`${API.GET_ANIME_DETAIL_URL}/${mikan_id}`);
+export const reqAnimeDetail = (data: AnimeDetailReqJson) =>
+  request.post(API.GET_ANIME_DETAIL_URL, data);
 export const reqDeleteAnimeTask = (data: Seed) =>
   request.post(API.DELETE_ANIME_TASK_URL, data);
 export const reqUpdateTask = () => request.post(API.UPDATE_TASK_URL);

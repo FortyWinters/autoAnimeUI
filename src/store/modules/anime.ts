@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import {
-  reqAnimeInfo,
   reqSubscribeAnime,
   reqSeedInfo,
   reqSubgroupInfo,
@@ -12,7 +11,16 @@ import {
   reqDeleteAnimeTask,
   reqUpdateTask,
 } from "@/api/anime";
-import type { Anime, Seeds, Seed, Subgroups, Tasks, qbTask } from "@/types";
+import type {
+  Anime,
+  Seeds,
+  Seed,
+  Subgroups,
+  Tasks,
+  qbTask,
+  AnimeDetailReqJson,
+  AnimeMikanIdReqJson,
+} from "@/types";
 import { ElMessage, ElLoading } from "element-plus";
 import { watch, onBeforeUnmount } from "vue";
 
@@ -30,12 +38,6 @@ export const useAnimeStore = defineStore("anime", {
     };
   },
   actions: {
-    async getAnime(mikan_id: number) {
-      let result = await reqAnimeInfo(mikan_id);
-      if (result.status == 200) {
-        this.animeInfo = result.data;
-      }
-    },
     async updateSubscribeStatus() {
       let result = await reqSubscribeAnime(this.reqSubscribeAnimeData);
       if (result.status == 200) {
@@ -58,7 +60,10 @@ export const useAnimeStore = defineStore("anime", {
       }
     },
     async getSeed(mikan_id: number) {
-      let result = await reqSeedInfo(mikan_id);
+      let data: AnimeMikanIdReqJson = {
+        mikan_id: mikan_id,
+      };
+      let result = await reqSeedInfo(data);
       if (result.status == 200) {
         this.seedInfo = result.data;
       }
@@ -70,7 +75,10 @@ export const useAnimeStore = defineStore("anime", {
       }
     },
     async getTask(mikan_id: number) {
-      let result = await reqTaskInfo(mikan_id);
+      let data: AnimeMikanIdReqJson = {
+        mikan_id: mikan_id,
+      };
+      let result = await reqTaskInfo(data);
       if (result.status == 200) {
         this.taskInfo = result.data;
       }
@@ -176,7 +184,10 @@ export const useAnimeStore = defineStore("anime", {
       }
     },
     async getAnimeDetail(mikan_id: number) {
-      let result = await reqAnimeDetail(mikan_id);
+      let data: AnimeDetailReqJson = {
+        mikan_id: mikan_id,
+      };
+      let result = await reqAnimeDetail(data);
       if (result.status == 200) {
         this.animeInfo = result.data.anime_info;
         this.seedInfo = result.data.seed_info;
@@ -292,7 +303,13 @@ export const useAnimeStore = defineStore("anime", {
   getters: {
     img_url: (state) =>
       //`src/assets/images/anime_list/${state.animeInfo.img_url}`,
-        import.meta.env.VITE_APT_FILE_SERVER_URL + `/images/anime_list/${state.animeInfo.img_url}`,
+      import.meta.env.VITE_APT_FILE_SERVER_URL +
+      `/images/anime_list/${state.animeInfo.img_url}`,
+    animeInfoReqJsonData: (state) => {
+      return {
+        mikan_id: state.animeInfo.mikan_id,
+      };
+    },
     reqSubscribeAnimeData: (state) => {
       return {
         mikan_id: state.animeInfo.mikan_id,
@@ -327,7 +344,11 @@ export const useAnimeStore = defineStore("anime", {
               updatedSeedStatus = 3; // downloaded
               break;
           }
-          seed = { ...seed, seed_status: updatedSeedStatus, is_new: correspondingTask.is_new};
+          seed = {
+            ...seed,
+            seed_status: updatedSeedStatus,
+            is_new: correspondingTask.is_new,
+          };
         }
 
         const correspondingQbTask = state.qbTaskInfo.find((qbTask) =>
