@@ -14,17 +14,32 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watchEffect, onBeforeUnmount } from 'vue'
+import { ref, computed, watchEffect, onBeforeUnmount, inject, onMounted } from 'vue'
 import type { TabsPaneContext } from 'element-plus'
 import Seed from '../seed/index.vue'
 import { storeToRefs } from 'pinia'
 import { useAnimeStore } from '@/store/modules/anime'
 import { useRoute } from 'vue-router'
+import { WSClient } from '@/ws/wsClient'
 
 const $route = useRoute()
 const activeTabName = ref('');
 let animeStore = useAnimeStore()
-const { animeSubgroupInfo, animeSeedInfo, activeSubgroupId } = storeToRefs(animeStore)
+const { animeSubgroupInfo, animeSeedInfo, activeSubgroupId, taskInfo } = storeToRefs(animeStore)
+
+const wsClient: WSClient | undefined = inject('wsClient');
+
+const execGetSeedsProgressTask = async () => {
+    if (wsClient) {
+        // 等待连接建立
+        const interval = setInterval(() => {
+            if (wsClient.isConnected) {
+                wsClient.getSeedsProgressTask(taskInfo.value.filter((task) => task.qb_task_status === 0))
+                clearInterval(interval);
+            }
+        }, 100); 
+    }
+}
 
 const handleClick = (tab: TabsPaneContext) => {
     if (typeof tab.props?.name !== 'undefined') {
@@ -65,8 +80,14 @@ watchEffect(() => {
     }
 });
 
+onMounted(() => {
+    // animeStore.setupWatchers();
+    execGetSeedsProgressTask();
+})
+
 onBeforeUnmount(() => {
     activeSubgroupId.value = -1;
+    wsClient?.stopGetSeedsProgressTask();
 })
 </script>
 

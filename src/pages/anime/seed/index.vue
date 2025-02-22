@@ -31,12 +31,17 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { useAnimeStore } from '@/store/modules/anime';
+import { inject } from "vue"
+import { WSClient } from '@/ws/wsClient'
 import type { Seed } from '@/types'
+import { storeToRefs } from 'pinia'
 
 let animeStore = useAnimeStore()
 
 defineProps(['seedArr'])
 const $router = useRouter()
+const wsClient: WSClient | undefined = inject('wsClient');
+const { taskInfo } = storeToRefs(animeStore)
 
 function jumpToVideo(mikan_id: number, episode: number, subgroup_id: number, seed_url: string) {
     $router.push({
@@ -50,8 +55,21 @@ function jumpToVideo(mikan_id: number, episode: number, subgroup_id: number, see
     })
 }
 
+const execGetSeedsProgressTask = async () => {
+    if (wsClient) {
+        // 等待连接建立
+        const interval = setInterval(() => {
+            if (wsClient.isConnected) {
+                wsClient.getSeedsProgressTask(taskInfo.value.filter((task) => task.qb_task_status === 0))
+                clearInterval(interval);
+            }
+        }, 100); 
+    }
+}
+
 async function downloadAnimeSeed(seed: Seed) {
     await animeStore.downloadSeed(seed)
+    execGetSeedsProgressTask()
 }
 
 async function deleteAnimeTask(seed: Seed) {
@@ -178,7 +196,6 @@ function episodeClass(seed_status: number): string {
         }
 
         @keyframes flashAndBounce {
-            
             100% {
                 opacity: 1;
                 transform: translateY(50%, -50%);

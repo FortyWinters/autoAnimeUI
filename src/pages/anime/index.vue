@@ -56,13 +56,13 @@ const fetchAnimeDetail = (mikan_id: number) => {
 }
 
 onMounted(() => {
-    animeStore.setupWatchers();
-    fetchAnimeDetail(Number($route.query.mikan_id))
+    // animeStore.setupWatchers();
+    fetchAnimeDetail(Number($route.query.mikan_id));
 })
 
 onBeforeUnmount(() => {
     if (taskInfo.value.filter((task) => task.qb_task_status === 0).length !== 0) {
-        animeStore.sendStopSignal();
+        // animeStore.sendStopSignal();
     }
 })
 

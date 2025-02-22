@@ -22,7 +22,7 @@ import type {
   AnimeMikanIdReqJson,
 } from "@/types";
 import { ElMessage, ElLoading } from "element-plus";
-import { watch, onBeforeUnmount } from "vue";
+import { watch, onBeforeUnmount  } from "vue";
 
 export const useAnimeStore = defineStore("anime", {
   state() {
@@ -31,7 +31,6 @@ export const useAnimeStore = defineStore("anime", {
       seedInfo: [] as Seeds,
       subgroupInfo: [] as Subgroups,
       taskInfo: [] as Tasks,
-      ws: null as WebSocket | null,
       qbTaskInfo: [] as qbTask[],
       isConnected: false,
       activeSubgroupId: -1,
@@ -204,66 +203,66 @@ export const useAnimeStore = defineStore("anime", {
     async updateTask() {
       await reqUpdateTask();
     },
-    connectWs() {
-      if (this.ws == null && !this.isConnected) {
-        const baseURL = import.meta.env.VITE_API_BASE_URL;
-        const wsURL = baseURL.replace(/^http/, "ws") + "/v2/ws/";
-        this.ws = new WebSocket(wsURL);
-        this.ws.onopen = () => {
-          this.isConnected = true;
-          this.getTaskProgress(
-            JSON.stringify(
-              this.taskInfo.filter((task) => task.qb_task_status === 0)
-            )
-          );
-        };
-        this.ws.onmessage = (event) => {
-          try {
-            const data = JSON.parse(event.data);
-            if (Array.isArray(data)) {
-              let qbTaskList: qbTask[] = data.map((qbTask) => ({
-                torrent_name: qbTask.torrent_name,
-                progress: qbTask.progress,
-              }));
-              this.qbTaskInfo = qbTaskList;
-            } else {
-              console.error("Recevied data is not an array", data);
-            }
-          } catch (error) {
-            console.error("Failed to parse WebSocket data", error);
-          }
-        };
-        this.ws.onerror = (error) => {
-          console.error("WebSocket Error:", error);
-        };
-        this.ws.onclose = () => {
-          this.isConnected = false;
-        };
-      } else {
-        console.log("websocket connect failed, no available webSocket");
-      }
-    },
-    disConnectWs() {
-      if (this.ws && this.isConnected) {
-        this.ws.close();
-        this.ws = null;
-        this.isConnected = false;
-      } else {
-        console.log("websocket disconnect failed, no available webSocket");
-      }
-    },
-    getTaskProgress(data: string) {
-      if (this.ws && this.isConnected) {
-        this.ws.send(data);
-      }
-    },
-    sendStopSignal() {
-      if (this.ws && this.isConnected) {
-        this.ws.send("STOP");
-        this.isConnected = false;
-        this.ws = null;
-      }
-    },
+    // connectWs() {
+    //   if (this.ws == null && !this.isConnected) {
+    //     const baseURL = import.meta.env.VITE_API_BASE_URL;
+    //     const wsURL = baseURL.replace(/^http/, "ws") + "/v2/ws/";
+    //     this.ws = new WebSocket(wsURL);
+    //     this.ws.onopen = () => {
+    //       this.isConnected = true;
+    //       this.getTaskProgress(
+    //         JSON.stringify(
+    //           this.taskInfo.filter((task) => task.qb_task_status === 0)
+    //         )
+    //       );
+    //     };
+    //     this.ws.onmessage = (event) => {
+    //       try {
+    //         const data = JSON.parse(event.data);
+    //         if (Array.isArray(data)) {
+    //           let qbTaskList: qbTask[] = data.map((qbTask) => ({
+    //             torrent_name: qbTask.torrent_name,
+    //             progress: qbTask.progress,
+    //           }));
+    //           this.qbTaskInfo = qbTaskList;
+    //         } else {
+    //           console.error("Recevied data is not an array", data);
+    //         }
+    //       } catch (error) {
+    //         console.error("Failed to parse WebSocket data", error);
+    //       }
+    //     };
+    //     this.ws.onerror = (error) => {
+    //       console.error("WebSocket Error:", error);
+    //     };
+    //     this.ws.onclose = () => {
+    //       this.isConnected = false;
+    //     };
+    //   } else {
+    //     console.log("websocket connect failed, no available webSocket");
+    //   }
+    // },
+    // disConnectWs() {
+    //   if (this.ws && this.isConnected) {
+    //     this.ws.close();
+    //     this.ws = null;
+    //     this.isConnected = false;
+    //   } else {
+    //     console.log("websocket disconnect failed, no available webSocket");
+    //   }
+    // },
+    // getTaskProgress(data: string) {
+    //   if (this.ws && this.isConnected) {
+    //     this.ws.send(data);
+    //   }
+    // },
+    // sendStopSignal() {
+    //   if (this.ws && this.isConnected) {
+    //     this.ws.send("STOP");
+    //     this.isConnected = false;
+    //     this.ws = null;
+    //   }
+    // },
     setupWatchers() {
       const stopWatchTaskInfo = watch(
         () => this.taskInfo,
@@ -275,16 +274,16 @@ export const useAnimeStore = defineStore("anime", {
             ? previousTasks.filter((task) => task.qb_task_status === 0)
             : [];
 
-          if (
-            tasksWithStatusZero.length !== previousTasksWithStatusZero.length
-          ) {
-            if (tasksWithStatusZero.length !== 0) {
-              this.sendStopSignal();
-              this.connectWs();
-            } else {
-              this.sendStopSignal();
-            }
-          }
+          // if (
+          //   tasksWithStatusZero.length !== previousTasksWithStatusZero.length
+          // ) {
+          //   if (tasksWithStatusZero.length !== 0) {
+          //     this.sendStopSignal();
+          //     this.connectWs();
+          //   } else {
+          //     this.sendStopSignal();
+          //   }
+          // }
         },
         {
           deep: true,

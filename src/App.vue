@@ -9,7 +9,14 @@
 </template>
 
 <script setup lang="ts">
+import { provide } from 'vue'
 import { RouterView } from 'vue-router';
+import { WSClient } from "./ws/wsClient"
+
+const ws = WSClient.getInstance();
+ws.connect();
+provide('wsClient', ws);
+
 </script>
 
 <style scoped lang="scss">

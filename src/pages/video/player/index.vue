@@ -7,9 +7,10 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { defineProps, onBeforeUnmount, onMounted, ref, onUnmounted } from 'vue';
+import { defineProps, onBeforeUnmount, onMounted, ref, inject } from 'vue';
 import DPlayer from 'dplayer';
 import { setVideoProgress, getVideoProgress, updateSeenStatus } from '@/api/video'
+import { WSClient } from '@/ws/wsClient'
 
 const $route = useRoute()
 
@@ -23,6 +24,7 @@ const subtitlePath = String(props.subtitlePath)
 const dplayerContainer = ref<HTMLElement | null>(null);
 const dp = ref<DPlayer | null>(null);
 const TorrentName = String($route.query.torrent_name);
+const wsClient: WSClient | undefined = inject('wsClient');
 
 const adjustSubtitleFontSize = () => {
     if (dp.value && dp.value.video) {
@@ -40,34 +42,24 @@ const adjustSubtitleFontSize = () => {
     }
 };
 
-interface ReqVideoProgress {
-    progress_id: string,
-    torrent_name: string,
-    progress_status: number
-}
-
 const doGetVideoProgress = async () => {
-    const videoProgress: ReqVideoProgress = {
+    return await getVideoProgress({
         progress_id: "Default",
         torrent_name: TorrentName,
         progress_status: -1,
-    };
-    return await getVideoProgress(videoProgress);
+    });
 }
 
 const doSetVideoProgress = async () => {
     const progress = dp.value?.video.currentTime;
     if (progress !== undefined) {
-        const integerProgress = Math.floor(progress);
-
-        const videoProgress: ReqVideoProgress = {
-            progress_id: "Default",
-            torrent_name: TorrentName,
-            progress_status: integerProgress,
-        };
 
         // console.log("set time: ", videoProgress);
-        await setVideoProgress(videoProgress);
+        await setVideoProgress({
+            progress_id: "Default",
+            torrent_name: TorrentName,
+            progress_status: Math.floor(progress),
+        });
     }
 }
 
@@ -113,6 +105,21 @@ const enterPictureInPicture = () => {
     }
 };
 
+const startGetVideoProgress = () => {
+    if (wsClient) {
+        wsClient.connect();
+        wsClient.sendMessage({
+            task_type: "StartGetVideoProgressRequest",
+            task_data: {
+                torrent_name: TorrentName
+            }
+        });
+        wsClient.player = dp.value
+        wsClient.torrent_name = TorrentName
+    }
+
+}
+
 onMounted(() => {
     initializeDPlayer();
     if (dplayerContainer.value) {
@@ -122,8 +129,11 @@ onMounted(() => {
         onBeforeUnmount(() => {
             doSetVideoProgress();
             resizeObserver.disconnect();
+            wsClient?.stopGetVideoProgressTask();
         });
     }
+
+    startGetVideoProgress();
 });
 
 </script>
