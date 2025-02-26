@@ -4,7 +4,7 @@
             @select="handleSelect"
             style="height: 45px;">
             <el-menu-item index="/home">订阅</el-menu-item>
-            <el-menu-item index="/resource">视频</el-menu-item>
+            <el-menu-item index="/resource">放映室</el-menu-item>
             <el-menu-item index="/setting">设置</el-menu-item>
         </el-menu>
     </div>
